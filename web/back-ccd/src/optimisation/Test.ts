@@ -11,14 +11,14 @@ import {StateCampaign} from "../entities/enums/StateCampaign";
 
 // Articles
 const articles: Article[] = [
-    { id_article: "a1", description: "Monopoly Junior", category: Categories.SOC, age_range: AgeRange.PE, state: State.N, price: 8, weight: 400, id_box: null },
-    { id_article: "a2", description: "Barbie Aventurière", category: Categories.FIG, age_range: AgeRange.PE, state: State.TB, price: 5, weight: 300, id_box: null },
-    { id_article: "a3", description: "Puzzle éducatif", category: Categories.EVL, age_range: AgeRange.PE, state: State.TB, price: 7, weight: 350, id_box: null },
-    { id_article: "a4", description: "Cubes alphabet", category: Categories.CON, age_range: AgeRange.PE, state: State.N, price: 4, weight: 300, id_box: null },
-    { id_article: "a5", description: "Livre cache-cache", category: Categories.LIV, age_range: AgeRange.PE, state: State.N, price: 3, weight: 200, id_box: null },
-    { id_article: "a6", description: "Kapla 200 pièces", category: Categories.CON, age_range: AgeRange.EN, state: State.B, price: 10, weight: 600, id_box: null },
-    { id_article: "a7", description: "Cerf-volant Pirate", category: Categories.EXT, age_range: AgeRange.EN, state: State.N, price: 6, weight: 400, id_box: null },
-    { id_article: "a8", description: "Le Petit Nicolas", category: Categories.LIV, age_range: AgeRange.EN, state: State.TB, price: 5, weight: 200, id_box: null },
+    { id_article: "a1", description: "Monopoly Junior", category: Categories.SOC.code, age_range: AgeRange.PE.code, state: State.N.code, price: 8, weight: 400, id_box: null },
+    { id_article: "a2", description: "Barbie Aventurière", category: Categories.FIG.code, age_range: AgeRange.PE.code, state: State.TB.code, price: 5, weight: 300, id_box: null },
+    { id_article: "a3", description: "Puzzle éducatif", category: Categories.EVL.code, age_range: AgeRange.PE.code, state: State.TB.code, price: 7, weight: 350, id_box: null },
+    { id_article: "a4", description: "Cubes alphabet", category: Categories.CON.code, age_range: AgeRange.PE.code, state: State.N.code, price: 4, weight: 300, id_box: null },
+    { id_article: "a5", description: "Livre cache-cache", category: Categories.LIV.code, age_range: AgeRange.PE.code, state: State.N.code, price: 3, weight: 200, id_box: null },
+    { id_article: "a6", description: "Kapla 200 pièces", category: Categories.CON.code, age_range: AgeRange.EN.code, state: State.B.code, price: 10, weight: 600, id_box: null },
+    { id_article: "a7", description: "Cerf-volant Pirate", category: Categories.EXT.code, age_range: AgeRange.EN.code, state: State.N.code, price: 6, weight: 400, id_box: null },
+    { id_article: "a8", description: "Le Petit Nicolas", category: Categories.LIV.code, age_range: AgeRange.EN.code, state: State.TB.code, price: 5, weight: 200, id_box: null },
 ];
 
 // Abonnés
