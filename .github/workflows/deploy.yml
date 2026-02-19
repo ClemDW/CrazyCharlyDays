@@ -25,5 +25,5 @@ jobs:
           echo "$SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" "cd /chemin/vers/projet && git pull || git clone https://github.com/ClemDW/CrazyCharlyDays.git /users/home/denis154u/ccd"
+          ssh -i ~/.ssh/id_ed25519 "$SSH_USER@$SSH_HOST" "cd /users/home/denis154u/ccd && git pull || git clone https://github.com/ClemDW/CrazyCharlyDays.git /users/home/denis154u/ccd"
 
