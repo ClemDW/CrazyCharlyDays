@@ -6,11 +6,13 @@ import { AppDataSource } from "../data-source";
 
 import * as fs from "fs";
 import { Article } from "../entities/Article";
+import { Campaign } from "../entities/Campaign";
 import { Usertochild } from "../entities/UserToChild";
 import { CategoryKey } from "../entities/enums/Categories";
 import { AgeRangeKey } from "../entities/enums/AgeRange";
 import { StateKey } from "../entities/enums/State";
 import { User } from "../entities/User";
+import { StateCampaign } from "../entities/enums/StateCampaign";
 
 /**
  * 
@@ -20,10 +22,10 @@ async function initializeDatabase() : Promise<void> {
 
     return AppDataSource.initialize()
         .then(() => {
-            console.log("🚀 Connexion à PostgreSQL réussie !");
+            console.log("Connexion à PostgreSQL réussie !");
         })
         .catch((error) => {
-            console.error("❌ Erreur de connexion :", error);
+            console.error("Erreur de connexion :", error);
             process.exit(1); // Sortie en cas d'échec
         });
 
@@ -52,7 +54,7 @@ async function loadCSV(CSVFilePath: string) {
         for (const line of lines) {
 
             // Détection du changement de section
-            if (line === "articles" || line === "abonnes") {
+            if (line === "articles" || line === "abonnes" || line === "parametres") {
                 currentSection = line;
                 continue;
             }
@@ -87,7 +89,16 @@ async function loadCSV(CSVFilePath: string) {
                 userToChild.preference = data[3].split(",").map(p => p.trim());
                 userToChild.save();
 
-                console.log(`👤 Abonné ajouté : ${data[1]}`);
+                console.log(`Abonné ajouté : ${data[1]}`);
+
+            } else if (currentSection === "parametres") {
+
+                const campaign = new Campaign();
+                campaign.date = new Date();
+                campaign.max_weight = parseFloat(data[0]);
+                campaign.status = StateCampaign.IN_PROGRESS.code;
+                campaign.save();
+
             }
         }
 

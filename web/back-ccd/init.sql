@@ -20,10 +20,12 @@ CREATE TYPE status_enum AS ENUM ('IN_PROGRESS', 'VALIDATED', 'FINISHED');
 -- Table Campaign
 CREATE TABLE Campaign (
                           id_camp UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                          date TIMESTAMP NOT NULL,
-                          max_weight FLOAT NOT NULL,
+                          date TIMESTAMP,
+                          max_weight FLOAT,
+                          total_weight FLOAT,
                           min_price DECIMAL(10, 2) DEFAULT 0.00,
-                          max_price DECIMAL(10, 2),
+                          max_price DECIMAL(10, 2) DEFAULT 0.00,
+                          total_price DECIMAL(10, 2) DEFAULT 0.00,
                           status status_enum NOT NULL,
                           CONSTRAINT check_price_range CHECK (max_price >= min_price)
 );
