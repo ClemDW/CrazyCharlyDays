@@ -4,6 +4,7 @@ import { Campaign } from "../entities/Campaign";
 import { Usertochild } from "../entities/UserToChild";
 import { Article } from "../entities/Article";
 import * as fs from "fs/promises";
+import {Box} from "../entities/Box";
 
 type RecuitOptions = {
     initialTemperature?: number;
@@ -46,11 +47,11 @@ export default class RecuitSimule {
         };
     }
 
-    optimize(
+    async optimize(
         articles: Article[],
         campaign: Campaign,
         usersToChild: Usertochild[]
-    ): CompositionResult {
+    ): Promise<CompositionResult> {
         // box vide
         const initialBoxes: BoxWithArticle[] = usersToChild.map((utc, index) => {
             const b = new Box();
@@ -61,7 +62,6 @@ export default class RecuitSimule {
             b.total_weight = 0;
             b.total_price = 0;
             b.validated = false;
-
             return {
                 box: b,
                 articles: []
@@ -284,6 +284,26 @@ export default class RecuitSimule {
             T = T * this.opts.coolingRate;
             if (iterations >= this.opts.maxIterations) break;
         }
+        const compositionScore = this.scoreService.evaluateComposition(
+            deepCloneBoxes(bestBoxes),
+            campaign,
+            usersToChild
+        );
+
+        for (const b of bestBoxes) {
+
+            const box = new Box();
+            box.id_user = b.box.id_user;
+            box.id_camp = b.box.id_camp;
+
+            box.total_weight = b.articles.reduce((s, a) => s + Number(a.weight), 0);
+            box.total_price = b.articles.reduce((s, a) => s + Number(a.price), 0);
+            box.score_box = compositionScore.perBoxScore.get(b.box.id_box) ?? 0;
+            box.validated = false;
+
+            await box.save();
+        }
+
 
         // Retourne meilleure solution trouvée
         return {
