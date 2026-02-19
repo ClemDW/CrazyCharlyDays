@@ -1,53 +1,19 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 
-// --- Constants ---
-const AGE_RANGES = [
-  { code: "BB", label: "0-3 ans (bébé)" },
-  { code: "PE", label: "3-6 ans (petit enfant)" },
-  { code: "EN", label: "6-10 ans (enfant)" },
-  { code: "AD", label: "10+ ans (adolescent)" },
-] as const;
-
-const DEFAULT_CATEGORIES = [
-  { code: "SOC", label: "Jeux de société" },
-  { code: "FIG", label: "Figurines et poupées" },
-  { code: "CON", label: "Jeux de construction" },
-  { code: "EXT", label: "Jeux d'extérieur" },
-  { code: "EVL", label: "Jeux d'éveil et éducatifs" },
-  { code: "LIV", label: "Livres jeunesse" },
-] as const;
-
-interface Category {
-  code: string;
-  label: string;
-}
-
-interface Child {
-  ageRange: string;
-  categories: Category[];
-}
+import SubscriberChildrenForm from "@/components/SubscriberChildrenForm.vue";
+import { type Child, DEFAULT_CATEGORIES } from "@/constants/subscriber";
+import { getCookie, setCookie } from "@/utils/cookie";
 
 // --- State ---
 const lastName = ref("");
 const firstName = ref("");
 const email = ref("");
-const children = reactive<Child[]>([]);
+const children = ref<Child[]>([]);
 const errorMessage = ref("");
 const successMessage = ref("");
 
-// --- Cookie helpers ---
-function setCookie(name: string, value: string, days: number) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
-}
-
-function getCookie(name: string): string | null {
-  const match = document.cookie.match(
-    new RegExp("(?:^|; )" + name + "=([^;]*)"),
-  );
-  return match ? decodeURIComponent(match[1]) : null;
-}
+// cookie helpers removed (moved to @/utils/cookie)
 
 // --- Load from cookie on mount ---
 onMounted(() => {
@@ -59,18 +25,16 @@ onMounted(() => {
     firstName.value = data.firstName || "";
     email.value = data.email || "";
     if (Array.isArray(data.children)) {
-      children.splice(0);
-      data.children.forEach((c: any) => {
-        children.push({
-          ageRange: c.ageRange || "",
-          categories: Array.isArray(c.categories)
-            ? c.categories.map((cat: any) => ({
-                code: cat.code,
-                label: cat.label,
-              }))
-            : DEFAULT_CATEGORIES.map((cat) => ({ ...cat })),
-        });
-      });
+      children.value = data.children.map((c: any) => ({
+        name: c.name || "",
+        ageRange: c.ageRange || "",
+        categories: Array.isArray(c.categories)
+          ? c.categories.map((cat: any) => ({
+              code: cat.code,
+              label: cat.label,
+            }))
+          : DEFAULT_CATEGORIES.map((cat) => ({ ...cat })),
+      }));
     }
     successMessage.value =
       "Vos informations ont été restaurées depuis votre dernière visite.";
@@ -79,32 +43,7 @@ onMounted(() => {
   }
 });
 
-// --- Child management ---
-function addChild() {
-  children.push({
-    ageRange: "",
-    categories: DEFAULT_CATEGORIES.map((c) => ({ ...c })),
-  });
-}
-
-function removeChild(index: number) {
-  children.splice(index, 1);
-}
-
-// --- Category reordering ---
-function moveCategoryUp(child: Child, catIndex: number) {
-  if (catIndex <= 0) return;
-  const temp = child.categories[catIndex];
-  child.categories[catIndex] = child.categories[catIndex - 1];
-  child.categories[catIndex - 1] = temp;
-}
-
-function moveCategoryDown(child: Child, catIndex: number) {
-  if (catIndex >= child.categories.length - 1) return;
-  const temp = child.categories[catIndex];
-  child.categories[catIndex] = child.categories[catIndex + 1];
-  child.categories[catIndex + 1] = temp;
-}
+// Child management handled by SubscriberChildrenForm
 
 // --- Submit ---
 function handleSubmit() {
@@ -120,13 +59,13 @@ function handleSubmit() {
     return;
   }
 
-  if (children.length === 0) {
+  if (children.value.length === 0) {
     errorMessage.value = "Veuillez ajouter au moins un enfant.";
     return;
   }
 
-  for (let i = 0; i < children.length; i++) {
-    if (!children[i].ageRange) {
+  for (const [i, child] of children.value.entries()) {
+    if (!child.ageRange) {
       errorMessage.value = `Veuillez choisir une tranche d'âge pour l'enfant ${i + 1}.`;
       return;
     }
@@ -137,7 +76,7 @@ function handleSubmit() {
     lastName: lastName.value.trim(),
     firstName: firstName.value.trim(),
     email: email.value.trim(),
-    children: children.map((c) => ({
+    children: children.value.map((c) => ({
       ageRange: c.ageRange,
       categories: c.categories.map((cat) => ({
         code: cat.code,
@@ -198,67 +137,7 @@ function handleSubmit() {
       <hr />
       <h2>Enfants</h2>
 
-      <div
-        v-for="(child, childIdx) in children"
-        :key="childIdx"
-        class="child-block"
-      >
-        <h3>
-          Enfant {{ childIdx + 1 }}
-          <button
-            type="button"
-            class="btn-remove"
-            @click="removeChild(childIdx)"
-          >
-            ✕ Supprimer
-          </button>
-        </h3>
-
-        <!-- Age range -->
-        <div class="form-group">
-          <label :for="'childAge-' + childIdx">Tranche d'âge</label>
-          <select :id="'childAge-' + childIdx" v-model="child.ageRange">
-            <option value="" disabled>-- Choisir --</option>
-            <option v-for="age in AGE_RANGES" :key="age.code" :value="age.code">
-              {{ age.code }} — {{ age.label }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Category preferences -->
-        <div class="form-group">
-          <label
-            >Préférences de catégories de jouets (1 = la plus souhaitée)</label
-          >
-          <ol class="category-list">
-            <li v-for="(cat, catIdx) in child.categories" :key="cat.code">
-              <span class="cat-label">{{ cat.label }}</span>
-              <span class="cat-buttons">
-                <button
-                  type="button"
-                  :disabled="catIdx === 0"
-                  @click="moveCategoryUp(child, catIdx)"
-                  title="Monter"
-                >
-                  ▲
-                </button>
-                <button
-                  type="button"
-                  :disabled="catIdx === child.categories.length - 1"
-                  @click="moveCategoryDown(child, catIdx)"
-                  title="Descendre"
-                >
-                  ▼
-                </button>
-              </span>
-            </li>
-          </ol>
-        </div>
-      </div>
-
-      <button type="button" class="btn-add-child" @click="addChild()">
-        + Ajouter un enfant
-      </button>
+      <SubscriberChildrenForm v-model="children" />
 
       <!-- Messages -->
       <p v-if="errorMessage" class="msg error">{{ errorMessage }}</p>
@@ -327,94 +206,7 @@ h2 {
   margin-bottom: 0.75rem;
 }
 
-.child-block {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
-  background: #fafbfc;
-}
-
-.child-block h3 {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 0 0.75rem 0;
-  font-size: 1rem;
-}
-
-.btn-remove {
-  background: none;
-  border: none;
-  color: #e04040;
-  cursor: pointer;
-  font-size: 0.85rem;
-  padding: 0.25rem 0.5rem;
-}
-
-.btn-remove:hover {
-  text-decoration: underline;
-}
-
-.category-list {
-  padding-left: 1.5rem;
-  margin: 0.5rem 0 0 0;
-}
-
-.category-list li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.35rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.category-list li:last-child {
-  border-bottom: none;
-}
-
-.cat-label {
-  flex: 1;
-  font-size: 0.9rem;
-}
-
-.cat-buttons button {
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0.15rem 0.5rem;
-  margin-left: 0.25rem;
-  font-size: 0.8rem;
-  line-height: 1;
-}
-
-.cat-buttons button:hover:not(:disabled) {
-  background: #ddd;
-}
-
-.cat-buttons button:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.btn-add-child {
-  display: block;
-  width: 100%;
-  padding: 0.6rem;
-  background: #f5f7fa;
-  border: 2px dashed #c0c8d4;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 1rem;
-  transition: background 0.15s;
-}
-
-.btn-add-child:hover {
-  background: #eaeff5;
-}
+/* Children styles moved to SubscriberChildrenForm.vue */
 
 .msg {
   padding: 0.65rem 1rem;
