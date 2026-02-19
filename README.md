@@ -1,5 +1,3 @@
----
-
 # Projet Crazy Charly Days - Équipe Jus de Raison
 
 Ce dépôt contient l'application développée par l'équipe **Jus de Raison** dans le cadre du projet Crazy Charly Days. Notre solution vise à optimiser la gestion, la répartition et la distribution d'articles via un système de box intelligentes.
