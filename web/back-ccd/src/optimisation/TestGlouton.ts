@@ -1,6 +1,10 @@
-import { Article, Campaign, State, UserToChild } from "./Temp";
-import Score from "./Score";
+import {Article} from "../entities/Article";
+import {Campaign} from "../entities/Campaign";
 import Glouton from "./Glouton";
+import Score from "./Score";
+import {UserToChild} from "../entities/UserToChild";
+import {State} from "../entities/enums/State";
+
 
 function runTest(
     testName: string,
