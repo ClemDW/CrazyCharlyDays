@@ -1,3 +1,7 @@
+import * as dotenv from "dotenv";
+import path from "path";
+dotenv.config({ path: path.join(__dirname, "../../../.env") });
+
 import "reflect-metadata";
 import express, { Request, Response } from "express";
 import cors from "cors";
@@ -13,7 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.BACKEND_PORT;
 
 
 app.get("/articles", ArticleController.getAll);
