@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
+import axios from "axios";
 
 import SubscriberChildrenForm from "@/components/SubscriberChildrenForm.vue";
 import { type Child, DEFAULT_CATEGORIES } from "@/constants/subscriber";
 import { getCookie, setCookie } from "@/utils/cookie";
+
+const API_URL = "http://localhost:3000";
 
 // --- State ---
 const lastName = ref("");
@@ -12,6 +15,7 @@ const email = ref("");
 const children = ref<Child[]>([]);
 const errorMessage = ref("");
 const successMessage = ref("");
+const loading = ref(false);
 
 // cookie helpers removed (moved to @/utils/cookie)
 
@@ -46,7 +50,7 @@ onMounted(() => {
 // Child management handled by SubscriberChildrenForm
 
 // --- Submit ---
-function handleSubmit() {
+async function handleSubmit() {
   errorMessage.value = "";
   successMessage.value = "";
 
@@ -71,25 +75,72 @@ function handleSubmit() {
     }
   }
 
-  // Save to cookie (30 days)
-  const payload = {
-    lastName: lastName.value.trim(),
-    firstName: firstName.value.trim(),
-    email: email.value.trim(),
-    children: children.value.map((c) => ({
-      ageRange: c.ageRange,
-      categories: c.categories.map((cat) => ({
-        code: cat.code,
-        label: cat.label,
+  loading.value = true;
+  try {
+    // 1. Create or find the user
+    let userId: string;
+    try {
+      const userRes = await axios.post(`${API_URL}/users`, {
+        name: firstName.value.trim(),
+        family_name: lastName.value.trim(),
+        email: email.value.trim(),
+        role: "USER",
+      });
+      userId = userRes.data.id_user;
+    } catch (err: any) {
+      // If email already exists, find the user
+      if (err.response?.status === 400) {
+        const allUsers = await axios.get(`${API_URL}/users`);
+        const existing = allUsers.data.find(
+          (u: any) => u.email === email.value.trim(),
+        );
+        if (!existing) throw new Error("Utilisateur introuvable");
+        userId = existing.id_user;
+
+        // Update name if changed
+        await axios.put(`${API_URL}/users/${userId}`, {
+          name: firstName.value.trim(),
+          family_name: lastName.value.trim(),
+        });
+      } else {
+        throw err;
+      }
+    }
+
+    // 2. Create child entries (preferences)
+    for (const child of children.value) {
+      await axios.post(`${API_URL}/usertochild`, {
+        id_user: userId,
+        age_range: child.ageRange,
+        preference: child.categories.map((cat) => cat.code),
+      });
+    }
+
+    // 3. Save to cookie (30 days)
+    const payload = {
+      lastName: lastName.value.trim(),
+      firstName: firstName.value.trim(),
+      email: email.value.trim(),
+      children: children.value.map((c) => ({
+        ageRange: c.ageRange,
+        categories: c.categories.map((cat) => ({
+          code: cat.code,
+          label: cat.label,
+        })),
       })),
-    })),
-  };
+    };
+    setCookie("subscriber", JSON.stringify(payload), 30);
 
-  setCookie("subscriber", JSON.stringify(payload), 30);
-
-  console.log("Subscriber data:", payload);
-  successMessage.value =
-    "Inscription enregistrée ! Vos informations seront mémorisées pour votre prochaine visite.";
+    successMessage.value =
+      "Inscription enregistrée avec succès ! Vos informations ont été sauvegardées.";
+  } catch (error: any) {
+    console.error("Erreur lors de l'inscription :", error);
+    errorMessage.value =
+      error.response?.data?.message ||
+      "Erreur lors de l'inscription. Veuillez réessayer.";
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -144,7 +195,9 @@ function handleSubmit() {
       <p v-if="successMessage" class="msg success">{{ successMessage }}</p>
 
       <!-- Submit -->
-      <button type="submit" class="btn-submit">Valider l'inscription</button>
+      <button type="submit" class="btn-submit" :disabled="loading">
+        {{ loading ? "Inscription en cours..." : "Valider l'inscription" }}
+      </button>
     </form>
   </div>
 </template>
