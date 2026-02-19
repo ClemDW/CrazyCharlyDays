@@ -69,7 +69,7 @@ export default class Score {
             this.usedArticles.add(article.id_article);
 
             // Règle 2 : Compatibilité d'âge
-            if (article.age_range !== child.age_range){
+            if (article.age_range.code !== child.age_range.code){
                 return INVALID_SCORE;
             }
 
