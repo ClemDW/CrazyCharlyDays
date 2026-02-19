@@ -19,7 +19,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.BACKEND_PORT;
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 3000;
 
 // Serve uploaded images as static files
 app.use("/images", express.static(path.join(__dirname, "../images")));

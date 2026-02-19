@@ -97,11 +97,41 @@ async function handleSubmit() {
   }
 }
 
-function launchComposition() {
+const compositionLoading = ref(false);
+const compositionResult = ref<any>(null);
+const compositionError = ref("");
+const csvData = ref("");
+
+async function launchComposition() {
   if (!configSaved.value) return;
-  console.log("Lancement de la composition avec la configuration actuelle.");
-  // TODO: intégrer la logique de composition
-  alert("Composition lancée !");
+  compositionLoading.value = true;
+  compositionError.value = "";
+  compositionResult.value = null;
+
+  try {
+    const response = await axios.get(`${API_URL}/optimize`);
+    compositionResult.value = response.data.jsonObject;
+    csvData.value = response.data.csv;
+    successMessage.value = `Composition terminée ! Score global : ${response.data.jsonObject.score}`;
+  } catch (error: any) {
+    console.error("Erreur lors de la composition :", error);
+    compositionError.value =
+      error.response?.data?.message ||
+      "Erreur lors du lancement de la composition.";
+  } finally {
+    compositionLoading.value = false;
+  }
+}
+
+function downloadCSV() {
+  if (!csvData.value) return;
+  const blob = new Blob([csvData.value], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "composition.csv";
+  link.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 
@@ -171,11 +201,56 @@ function launchComposition() {
     <!-- Launch button (outside the form) -->
     <button
       class="btn-launch"
-      :disabled="!configSaved"
+      :disabled="!configSaved || compositionLoading"
       @click="launchComposition"
     >
-      🚀 Lancer la composition
+      {{
+        compositionLoading
+          ? "⏳ Optimisation en cours..."
+          : "🚀 Lancer la composition"
+      }}
     </button>
+
+    <!-- Composition error -->
+    <p v-if="compositionError" class="msg error" style="margin-top: 1rem">
+      {{ compositionError }}
+    </p>
+
+    <!-- Composition results -->
+    <div v-if="compositionResult" class="results">
+      <h2>Résultats de la composition</h2>
+      <p class="score-badge">
+        Score global : <strong>{{ compositionResult.score }}</strong>
+      </p>
+      <p class="subtitle">
+        {{ compositionResult.boxes.length }} box(es) composée(s)
+      </p>
+
+      <button v-if="csvData" class="btn-csv" @click="downloadCSV">
+        📥 Télécharger le CSV
+      </button>
+
+      <div
+        v-for="(box, idx) in compositionResult.boxes"
+        :key="idx"
+        class="result-box"
+      >
+        <h3>
+          📦 {{ box.userName }}
+          <span class="box-user-id">({{ box.id_user.slice(0, 8) }}…)</span>
+        </h3>
+        <ul>
+          <li v-for="art in box.articles" :key="art.id">
+            <span class="art-cat">{{ art.category }}</span>
+            <span class="art-age">{{ art.age_range }}</span>
+            <span class="art-state">{{ art.state }}</span>
+          </li>
+        </ul>
+        <p v-if="box.articles.length === 0" class="empty-box">
+          Aucun article assigné
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -294,5 +369,98 @@ h1 {
 .btn-launch:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Composition results */
+.results {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+}
+
+.score-badge {
+  font-size: 1.1rem;
+  color: #2e7d32;
+  margin-bottom: 0.5rem;
+}
+
+.btn-csv {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  margin-bottom: 1rem;
+  background: #1565c0;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-csv:hover {
+  background: #0d47a1;
+}
+
+.result-box {
+  background: #f8f9fb;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.result-box h3 {
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem;
+}
+
+.box-user-id {
+  color: #999;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.result-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.result-box li {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.art-cat,
+.art-age,
+.art-state {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.art-cat {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+.art-age {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+.art-state {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.empty-box {
+  color: #999;
+  font-size: 0.85rem;
+  font-style: italic;
 }
 </style>
