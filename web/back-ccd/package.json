@@ -1,0 +1,10 @@
+{
+    "name": "back-ccd",
+    "version": "1.0.0",
+    "description": "Backend API pour CrazyCharlyDays",
+    "main": "src/index.js",
+    "scripts": {
+        "dev": "node --watch src/index.js",
+        "start": "node src/index.js"
+    }
+}
