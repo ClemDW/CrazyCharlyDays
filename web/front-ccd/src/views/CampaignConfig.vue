@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getCookie, setCookie } from "@/utils/cookie";
 
 const router = useRouter();
 
@@ -12,18 +13,7 @@ const errorMessage = ref("");
 const successMessage = ref("");
 const configSaved = ref(false);
 
-// --- Cookie helpers ---
-function setCookie(name: string, value: string, days: number) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
-}
-
-function getCookie(name: string): string | null {
-  const match = document.cookie.match(
-    new RegExp("(?:^|; )" + name + "=([^;]*)"),
-  );
-  return match ? decodeURIComponent(match[1]) : null;
-}
+// cookie helpers removed (moved to @/utils/cookie)
 
 // --- Load saved config on mount ---
 onMounted(() => {

@@ -9,6 +9,7 @@ import AdminSubscribers from "../views/AdminSubscribers.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
 import Catalog from "../views/Catalog.vue";
 import ArticleDetail from "../views/ArticleDetail.vue";
+import Profile from "../views/Profile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +64,11 @@ const router = createRouter({
       name: "article-detail",
       component: ArticleDetail,
       props: true,
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: Profile,
     },
   ],
 });

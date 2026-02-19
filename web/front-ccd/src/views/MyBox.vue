@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
+import { getCookie } from "@/utils/cookie";
 
 interface Article {
   description: string;
@@ -26,13 +27,7 @@ const searched = ref(false);
 const errorMessage = ref("");
 const boxes = reactive<Box[]>([]);
 
-// --- Cookie helper ---
-function getCookie(name: string): string | null {
-  const match = document.cookie.match(
-    new RegExp("(?:^|; )" + name + "=([^;]*)"),
-  );
-  return match ? decodeURIComponent(match[1]) : null;
-}
+// cookie helper removed (moved to @/utils/cookie)
 
 // --- Mock data (simulates validated boxes for demo purposes) ---
 const MOCK_BOXES: Record<string, Box[]> = {
