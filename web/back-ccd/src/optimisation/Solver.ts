@@ -4,6 +4,9 @@ import { Usertochild } from "../entities/UserToChild";
 import { User } from "../entities/User";
 import Glouton from "./Glouton";
 import Score from "./Score";
+import {AppDataSource} from "../data-source";
+import { IsNull } from "typeorm";
+import {StateCampaign} from "../entities/enums/StateCampaign";
 
 export default class Solver {
 
@@ -11,19 +14,22 @@ export default class Solver {
      * Résout le problème d'optimisation, en exécutant l'algorithme Glouton, et en retournant le résultat.
      */
     async solve() {
-        // Récupérer les données depuis la DB
-        const articles = await Article.find();
+        // Récupérer les données depuis la DB (articles disponibles)
+        const articleRepo = AppDataSource.getRepository(Article);
+        const articles = await articleRepo.find({ where: { id_box: IsNull() } });
 
         // On prend la dernière campagne
-        const campaign = await Campaign.findOne({
+        const campaignRepo = AppDataSource.getRepository(Campaign);
+        const campaign = await campaignRepo.findOne({
+            where: {status: StateCampaign.IN_PROGRESS.code},
             order: { date: "DESC" }
         });
-
         if (!campaign) {
             throw new Error("Aucune campagne trouvée.");
         }
 
-        const usersToChild = await Usertochild.find();
+        const childRepo = AppDataSource.getRepository(Usertochild);
+        const usersToChild = await childRepo.find();
 
         // Lancer l'optimisation
         const glouton = new Glouton(new Score());
