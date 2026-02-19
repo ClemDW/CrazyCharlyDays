@@ -7,7 +7,7 @@ COPY package.json package-lock.json* ./
 
 # Installer les dépendances
 RUN npm install
-
+RUN npm install --save-dev typescript
 # Copier le reste du code source
 COPY . .
 
