@@ -6,4 +6,6 @@ type BoxWithArticle = {
     articles: Article[]
 }
 
-export { BoxWithArticle}
+
+
+export { BoxWithArticle }
