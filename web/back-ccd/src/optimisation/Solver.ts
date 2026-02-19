@@ -1,12 +1,12 @@
-import { Article } from "../entities/Article";
-import { Campaign } from "../entities/Campaign";
-import { Usertochild } from "../entities/UserToChild";
-import { User } from "../entities/User";
-import Glouton from "./Glouton";
+import {Article} from "../entities/Article";
+import {Campaign} from "../entities/Campaign";
+import {Usertochild} from "../entities/UserToChild";
+import {User} from "../entities/User";
 import Score from "./Score";
 import {AppDataSource} from "../data-source";
-import { IsNull } from "typeorm";
+import {IsNull} from "typeorm";
 import {StateCampaign} from "../entities/enums/StateCampaign";
+import RecuitSimule from "./RecuitSimule";
 
 export default class Solver {
 
@@ -32,10 +32,8 @@ export default class Solver {
         const usersToChild = await childRepo.find();
 
         // Lancer l'optimisation
-        const glouton = new Glouton(new Score());
-        const result = glouton.optimize(articles, campaign, usersToChild);
-
-        return result;
+        const method = new RecuitSimule(new Score());
+        return method.optimize(articles, campaign, usersToChild);
     }
 
     /**
