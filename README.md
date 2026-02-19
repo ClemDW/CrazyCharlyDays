@@ -17,7 +17,7 @@ Ce dépôt contient l'application développée par l'équipe **Jus de Raison** d
 ## 🔗 Liens utiles
 
 * **Dépôt Git :** [https://github.com/ClemDW/CrazyCharlyDays](https://github.com/ClemDW/CrazyCharlyDays)
-* **Application finale :** *En attente de déploiement*
+* **Application finale :** [http://docketu.iutnc.univ-lorraine.fr:15341](http://docketu.iutnc.univ-lorraine.fr:15341)
 
 ---
 
@@ -46,9 +46,8 @@ La communication entre Vue.js et le serveur Express s'appuie sur une **API REST*
 
 ### Notes pour les tests
 
-* **Identifiants de test :** `admin@ccd.com` / `password123`
-* **Données pré-saisies :** Un jeu de données de test peut être chargé via le module `csv_manager` (voir section Optimisation).
-* **Fonctionnalités additionnelles :** Mise en place d'un système de typage strict pour les catégories et tranches d'âge afin de garantir l'intégrité des données dès la saisie.
+* **Identifiants de test :** `alice.dupont@email.com` pour voir le profile par exemple
+* **Données pré-saisies :** Un jeu de données de test est chargé automatiquement au démarrage du serveur.
 
 ---
 
