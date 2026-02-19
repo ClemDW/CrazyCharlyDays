@@ -3,6 +3,8 @@ import HomeView from "../views/HomeView.vue";
 import CreateArticle from "../views/CreateArticle.vue";
 import AuthView from "../views/AuthView.vue";
 import CampaignConfig from "../views/CampaignConfig.vue";
+import MyBox from "../views/MyBox.vue";
+import AdminBoxes from "../views/AdminBoxes.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +28,16 @@ const router = createRouter({
       path: "/admin/campaign",
       name: "campaign-config",
       component: CampaignConfig,
+    },
+    {
+      path: "/my-box",
+      name: "my-box",
+      component: MyBox,
+    },
+    {
+      path: "/admin/boxes",
+      name: "admin-boxes",
+      component: AdminBoxes,
     },
   ],
 });
