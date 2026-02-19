@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strictPropertyInitialization": false,
-    "lib": ["esnext"],
+    "lib": ["esnext", "dom"],
   }
   },
   "include": [
