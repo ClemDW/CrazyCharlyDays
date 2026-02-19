@@ -64,7 +64,7 @@ async function loadCSV(CSVFilePath: string) {
             if (currentSection === "articles") {
 
                 const article = new Article();
-                // data[0] est l'ID (a1, a2...), on l'ignore si la DB génère un UUID, 
+                // data[0] est l'ID (a1, a2...), on l'ignore si la DB génère un UUID,
                 // ou on l'utilise si id_article est une string manuelle.
                 article.description = data[1];
                 article.category = data[2] as CategoryKey;
@@ -85,9 +85,10 @@ async function loadCSV(CSVFilePath: string) {
                 await user.save();
 
                 const userToChild = new Usertochild();
+                userToChild.id_user = user.id_user;
                 userToChild.age_range = data[2] as AgeRangeKey;
                 userToChild.preference = data[3].split(",").map(p => p.trim());
-                userToChild.save();
+                await userToChild.save();
 
                 console.log(`Abonné ajouté : ${data[1]}`);
 
@@ -97,7 +98,7 @@ async function loadCSV(CSVFilePath: string) {
                 campaign.date = new Date();
                 campaign.max_weight = parseFloat(data[0]);
                 campaign.status = StateCampaign.IN_PROGRESS.code;
-                campaign.save();
+                await campaign.save();
 
             }
         }

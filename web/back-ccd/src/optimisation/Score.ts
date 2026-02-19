@@ -1,9 +1,7 @@
 import { BoxWithArticle } from "./Temp";
 import {Campaign} from "../entities/Campaign";
-import {UserToChild} from "../entities/UserToChild";
+import {Usertochild} from "../entities/UserToChild";
 import {State} from "../entities/enums/State";
-
-import { BoxWithArticle } from "./Temp";
 
 const INVALID_SCORE = -9999999999999;
 
@@ -16,7 +14,7 @@ export default class Score {
 
     usedArticles = new Set<string>();
 
-    evaluateComposition(boxes : Array<BoxWithArticle>, campaign: Campaign, usersToChild: Array<UserToChild>) : ScoreResult {
+    evaluateComposition(boxes : Array<BoxWithArticle>, campaign: Campaign, usersToChild: Array<Usertochild>) : ScoreResult {
         this.usedArticles = new Set<string>();
         let totalScore = 0;
         let perBoxScore = new Map<string, number>();
@@ -58,7 +56,7 @@ export default class Score {
         }
     }
 
-    evaluateBox(box: BoxWithArticle, campaign: Campaign, child: UserToChild) : number {
+    evaluateBox(box: BoxWithArticle, campaign: Campaign, child: Usertochild) : number {
         let totalWeight = 0;
         let score = 0;
         let categoriesCount = new Map<string, number>();
@@ -82,7 +80,7 @@ export default class Score {
             }
 
             // Règle 4 : Gain par préférence de catégorie
-            let preferences = child.preferences;
+            let preferences = child.preference;
             let idx = preferences.findIndex(pref => pref === article.category);
 
             // Règle 6 : Utilités dégressives
@@ -105,8 +103,8 @@ export default class Score {
 
             // Règle 5 : Bonus d'état
             switch (article.state) {
-                case State.N: score += 2; break;
-                case State.TB: score += 1; break;
+                case State.N.code: score += 2; break;
+                case State.TB.code: score += 1; break;
                 default: break;
             }
 
