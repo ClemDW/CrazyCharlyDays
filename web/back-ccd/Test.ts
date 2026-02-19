@@ -27,7 +27,7 @@ const campaign: Campaign = {
 };
 
 // Composition
-const boxes: BoxWithArticle[] = [
+const boxes1: BoxWithArticle[] = [
     {
         box: { id_box: "b1", id_user: "Alice" },
         articles: [articles[0], articles[1], articles[3]] // a1, a2, a4
@@ -42,40 +42,42 @@ const boxes: BoxWithArticle[] = [
     }
 ];
 
+const boxes2: BoxWithArticle[] = [
+    {
+        box: { id_box: "b1", id_user: "Alice" },
+        articles: [articles[0], articles[1], articles[2]] // a1, a2, a3
+    },
+    {
+        box: { id_box: "b2", id_user: "Bob" },
+        articles: [articles[6], articles[5]] // a7, a6
+    },
+    {
+        box: { id_box: "b3", id_user: "Clara" },
+        articles: [articles[3], articles[4]] // a4, a5
+    }
+];
+
 // ====== TEST ======
 
 const scorer = new Score();
-const result = scorer.evaluateComposition(boxes, campaign, users);
+const result1 = scorer.evaluateComposition(boxes1, campaign, users);
 
-console.log("Score calculé :", result.score);
-console.log("Détail par box :", result.perBoxScore);
+console.log("Score calculé :", result1.score);
+console.log("Détail par box :", result1.perBoxScore);
 
-if (result.score === 70) {
+if (result1.score === 70) {
     console.log("✅ Test réussi : score = 70");
 } else {
     console.log("❌ Test échoué : score attendu = 70");
 }
 
+const result2 = scorer.evaluateComposition(boxes2, campaign, users);
 
-// ==== TEST glouton =====
-import Glouton from "./Glouton";
+console.log("Score calculé :", result2.score);
+console.log("Détail par box :", result2.perBoxScore);
 
-console.log("\n===== TEST GLOUTON =====");
-
-const glouton = new Glouton(new Score());
-
-const resultGlouton = glouton.optimize(
-    articles,
-    campaign,
-    users
-);
-
-console.log("Score glouton :", resultGlouton.score);
-
-for (const box of resultGlouton.boxes) {
-    console.log(
-        box.box.id_user,
-        "->",
-        box.articles.map(a => a.id_article)
-    );
+if (result2.score === 62) {
+    console.log("✅ Test réussi : score = 62");
+} else {
+    console.log("❌ Test échoué : score attendu = 62");
 }
