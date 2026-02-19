@@ -13,7 +13,7 @@ import { Usertochild } from "./entities/UserToChild";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "localhost",
+    url: process.env.DATABASE_URL,
     port: parseInt(process.env.DB_PORT),
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
