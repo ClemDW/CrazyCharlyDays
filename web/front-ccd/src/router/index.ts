@@ -9,6 +9,7 @@ import AdminSubscribers from "../views/AdminSubscribers.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
 import Catalog from "../views/Catalog.vue";
 import ArticleDetail from "../views/ArticleDetail.vue";
+import ArticleEdit from "../views/ArticleEdit.vue";
 import Profile from "../views/Profile.vue";
 
 const router = createRouter({
@@ -63,6 +64,12 @@ const router = createRouter({
       path: "/catalog/:id",
       name: "article-detail",
       component: ArticleDetail,
+      props: true,
+    },
+    {
+      path: "/catalog/:id/edit",
+      name: "article-edit",
+      component: ArticleEdit,
       props: true,
     },
     {

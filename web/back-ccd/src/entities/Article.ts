@@ -6,27 +6,30 @@ import { StateKey } from "./enums/State";
 
 @Entity()
 export class Article extends BaseEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id_article: string;
+  @PrimaryGeneratedColumn("uuid")
+  id_article: string;
 
-    @Column()
-    description: string;
+  @Column()
+  description: string;
 
-    @Column({ type: "varchar" })
-    category: CategoryKey;
+  @Column({ type: "varchar" })
+  category: CategoryKey;
 
-    @Column({ type: "varchar" })
-    age_range: AgeRangeKey;
+  @Column({ type: "varchar" })
+  age_range: AgeRangeKey;
 
-    @Column({ type: "varchar" })
-    state: StateKey;
+  @Column({ type: "varchar" })
+  state: StateKey;
 
-    @Column("float")
-    price: number;
+  @Column("float")
+  price: number;
 
-    @Column("float")
-    weight: number;
+  @Column("float")
+  weight: number;
 
-    @Column("uuid", { nullable: true })
-    id_box: string;
+  @Column("uuid", { nullable: true })
+  id_box: string;
+
+  @Column({ type: "text", nullable: true })
+  picture: string;
 }

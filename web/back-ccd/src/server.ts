@@ -5,6 +5,7 @@ dotenv.config({ path: path.join(__dirname, "../../../.env") });
 import "reflect-metadata";
 import express, { Request, Response } from "express";
 import cors from "cors";
+import multer from "multer";
 import { Article } from "./entities/Article";
 import { ArticleController } from "./controllers/articleController";
 import { UserController } from "./controllers/userController";
@@ -18,7 +19,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.BACKEND_PORT;
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 3000;
+
+// Serve uploaded images as static files
+app.use("/images", express.static(path.join(__dirname, "../images")));
+
+// Multer config: store uploads in images/ with unique filenames
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, path.join(__dirname, "../images")),
+  filename: (_req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, uniqueSuffix + ext);
+  },
+});
+const upload = multer({ storage });
 
 /**
  * Endpoint pour lancer l'optimisation.
@@ -33,7 +48,7 @@ app.get("/optimize", OptimizationController.optimize);
 
 app.get("/articles", ArticleController.getAll);
 app.get("/articles/:id", ArticleController.getOne);
-app.post("/articles", ArticleController.create);
+app.post("/articles", upload.single("picture"), ArticleController.create);
 app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
   try {
     const repo = AppDataSource.getRepository(Article);
@@ -53,34 +68,27 @@ app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
 
 app.put("/articles/:id", ArticleController.update);
 
-
-
 app.post("/users", UserController.create);
 app.get("/users", UserController.getAll);
 app.get("/users/:id", UserController.getOne);
 app.put("/users/:id", UserController.update);
 app.delete("/users/:id", UserController.delete);
 
-
-
 app.post("/usertochild", UserToChildController.create);
 app.get("/usertochild/:id", UserToChildController.getOne);
 app.put("/usertochild/:id", UserToChildController.update);
-
-
+app.delete("/usertochild/:id", UserToChildController.deleteByUser);
 
 app.post("/box", BoxController.create);
 app.get("/box", BoxController.getAll);
+app.get("/box/detailed", BoxController.getDetailed);
 app.get("/box/:id", BoxController.getOne);
 app.put("/box/:id", BoxController.update);
-
-
 
 app.post("/campaign", CampaignController.create);
 app.get("/campaign", CampaignController.getAll);
 app.get("/campaign/:id", CampaignController.getOne);
 app.put("/campaign/:id", CampaignController.update);
-
 
 AppDataSource.initialize()
   .then(() => {

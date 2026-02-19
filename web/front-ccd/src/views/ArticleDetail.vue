@@ -10,78 +10,18 @@ export default {
   },
   methods: {
     fetchArticle() {
-      // Mock Data Logic (replace with API call when backend is ready)
-      // Simulating API fetch
       this.loading = true;
-      setTimeout(() => {
-        const mockArticles = [
-          {
-            id: 1,
-            description: "Monopoly Classique",
-            categorie: "Jeux de société",
-            tranche_age: "8+",
-            etat: "Neuf",
-            prix: 25,
-            poids: 1.2,
-            image:
-              "https://m.media-amazon.com/images/I/81q5+I08jUL._AC_SL1500_.jpg",
-          },
-          {
-            id: 2,
-            description: "Sophie la girafe",
-            categorie: "Jouets éveil",
-            tranche_age: "0-2",
-            etat: "Bon état",
-            prix: 10,
-            poids: 0.3,
-            image:
-              "https://m.media-amazon.com/images/I/71u+tM+g3LL._AC_SL1500_.jpg",
-          },
-          {
-            id: 3,
-            description: "Lego Star Wars",
-            categorie: "Construction",
-            tranche_age: "9-14",
-            etat: "Occasion",
-            prix: 45,
-            poids: 0.8,
-            image:
-              "https://m.media-amazon.com/images/I/81I3-jXlC0L._AC_SL1500_.jpg",
-          },
-          {
-            id: 4,
-            description: "Barbie Dreamhouse",
-            categorie: "Poupées",
-            tranche_age: "3-8",
-            etat: "Neuf",
-            prix: 120,
-            poids: 3.5,
-            image:
-              "https://m.media-amazon.com/images/I/71wF7B13nCL._AC_SL1500_.jpg",
-          },
-          {
-            id: 5,
-            description: "Uno",
-            categorie: "Jeux de société",
-            tranche_age: "7+",
-            etat: "Bon état",
-            prix: 8,
-            poids: 0.2,
-            image:
-              "https://m.media-amazon.com/images/I/61Nl-HhJ0TL._AC_SL1500_.jpg",
-          },
-        ];
-
-        // Find article by ID (handling both string/number types)
-        this.article = mockArticles.find(
-          (a) => a.id.toString() === this.id.toString(),
-        );
-
-        if (!this.article) {
-          this.error = "Article non trouvé";
-        }
-        this.loading = false;
-      }, 300);
+      this.error = null;
+      this.$api.get(`/articles/${this.id}`)
+        .then(response => {
+          this.article = response.data;
+          this.loading = false;
+        })
+        .catch(error => {
+          console.error("Erreur lors de la récupération de l'article:", error);
+          this.error = "Impossible de charger l'article.";
+          this.loading = false;
+        });
     },
     goBack() {
       this.$router.push({ name: "catalog" });
@@ -114,33 +54,32 @@ export default {
       <div class="info-grid">
         <div class="info-item">
           <span class="label">Catégorie</span>
-          <span class="value">{{ article.categorie }}</span>
+          <span class="value">{{ article.category }}</span>
         </div>
         <div class="info-item">
           <span class="label">Age</span>
-          <span class="value">{{ article.tranche_age }}</span>
+          <span class="value">{{ article.age_range }}</span>
         </div>
         <div class="info-item">
           <span class="label">État</span>
-          <span class="value">{{ article.etat }}</span>
+          <span class="value">{{ article.state }}</span>
         </div>
         <div class="info-item">
           <span class="label">Prix</span>
-          <span class="value price">{{ article.prix }} €</span>
+          <span class="value price">{{ article.price }} €</span>
         </div>
         <div class="info-item">
           <span class="label">Poids</span>
-          <span class="value">{{ article.poids }} kg</span>
-        </div>
-        <div class="info-item">
-          <span class="label">ID (UUID)</span>
-          <span class="value code">{{ article.id }}</span>
+          <span class="value">{{ article.weight }} kg</span>
         </div>
       </div>
 
       <div class="actions">
-        <!-- Placeholder actions -->
-        <button class="action-btn">Modifier</button>
+        <button
+          class="action-btn primary" 
+          @click="$router.push({ name: 'article-edit', params: { id: article.id_article } })">
+          Modifier l'article
+        </button>
       </div>
     </div>
   </div>

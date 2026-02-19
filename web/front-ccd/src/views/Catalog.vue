@@ -38,10 +38,10 @@ export default {
         return (
           matchesSearch &&
           (!this.filters.categorie ||
-            article.categorie === this.filters.categorie) &&
+            article.category === this.filters.categorie) &&
           (!this.filters.tranche_age ||
-            article.tranche_age === this.filters.tranche_age) &&
-          (!this.filters.etat || article.etat === this.filters.etat)
+            article.age_range === this.filters.tranche_age) &&
+          (!this.filters.etat || article.state === this.filters.etat)
         );
       });
     },
@@ -53,17 +53,15 @@ export default {
       return this.filteredArticles.slice(start, start + this.perPage);
     },
     uniqueCategories() {
-      return [
-        ...new Set(this.articles.map((a) => a.categorie).filter(Boolean)),
-      ];
+      return [...new Set(this.articles.map((a) => a.category).filter(Boolean))];
     },
     uniqueTranchesAge() {
       return [
-        ...new Set(this.articles.map((a) => a.tranche_age).filter(Boolean)),
+        ...new Set(this.articles.map((a) => a.age_range).filter(Boolean)),
       ];
     },
     uniqueEtats() {
-      return [...new Set(this.articles.map((a) => a.etat).filter(Boolean))];
+      return [...new Set(this.articles.map((a) => a.state).filter(Boolean))];
     },
   },
   watch: {
@@ -77,8 +75,9 @@ export default {
   methods: {
     fetchCatalog() {
       this.$api
-        .get("/catalog")
+        .get("/articles")
         .then((response) => {
+          console.log("Articles chargés depuis l'API:", response.data);
           this.articles = response.data;
           // Fallback if data is empty (temporary for dev without backend)
           if (!this.articles || this.articles.length === 0) {
@@ -90,61 +89,7 @@ export default {
           this.useMockData();
         });
     },
-    useMockData() {
-      console.log("Using mock data due to API failure/empty response.");
-      this.articles = [
-        {
-          id: 1,
-          description: "Monopoly Classique",
-          categorie: "Jeux de société",
-          tranche_age: "8+",
-          etat: "Neuf",
-          prix: 25,
-          poids: 1.2,
-          code_barre: "123456789",
-        },
-        {
-          id: 2,
-          description: "Sophie la girafe",
-          categorie: "Jouets éveil",
-          tranche_age: "0-2",
-          etat: "Bon état",
-          prix: 10,
-          poids: 0.3,
-          code_barre: "987654321",
-        },
-        {
-          id: 3,
-          description: "Lego Star Wars",
-          categorie: "Construction",
-          tranche_age: "9-14",
-          etat: "Occasion",
-          prix: 45,
-          poids: 0.8,
-          code_barre: "1122334455",
-        },
-        {
-          id: 4,
-          description: "Barbie Dreamhouse",
-          categorie: "Poupées",
-          tranche_age: "3-8",
-          etat: "Neuf",
-          prix: 120,
-          poids: 3.5,
-          code_barre: "5544332211",
-        },
-        {
-          id: 5,
-          description: "Uno",
-          categorie: "Jeux de société",
-          tranche_age: "7+",
-          etat: "Bon état",
-          prix: 8,
-          poids: 0.2,
-          code_barre: "9988776655",
-        },
-      ];
-    },
+
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
     },
@@ -328,24 +273,22 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="article in paginatedArticles" :key="article.id">
+          <tr v-for="article in paginatedArticles" :key="article.id_article">
             <td class="cell-name">{{ article.description }}</td>
             <td>
-              <span class="category-badge">{{ article.categorie }}</span>
+              <span class="category-badge">{{ article.category }}</span>
             </td>
             <td>
-              <span
-                :class="['age-badge', getAgeBadgeClass(article.tranche_age)]"
-              >
-                {{ article.tranche_age }}
+              <span :class="['age-badge', getAgeBadgeClass(article.age_range)]">
+                {{ article.age_range }}
               </span>
             </td>
             <td>
-              <span class="state-badge">{{ article.etat }}</span>
+              <span class="state-badge">{{ article.state }}</span>
             </td>
             <td class="cell-price">
-              {{ article.prix }} €
-              <span class="weight">({{ article.poids }} kg)</span>
+              {{ article.price }} €
+              <span class="weight">({{ article.weight }} kg)</span>
             </td>
             <td>
               <!-- Placeholder for future actions -->
@@ -354,7 +297,7 @@ export default {
                 @click="
                   $router.push({
                     name: 'article-detail',
-                    params: { id: article.id },
+                    params: { id: article.id_article },
                   })
                 "
               >
