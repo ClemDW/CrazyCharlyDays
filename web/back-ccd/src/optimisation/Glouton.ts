@@ -19,7 +19,7 @@ export default class Glouton {
         usersToChild: UserToChild[]
     ): CompositionResult {
 
-        // Initialisation des box vides
+        // box vides
         const boxes: BoxWithArticle[] = usersToChild.map((utc, index) => ({
             box: {
                 id_box: "box_" + index,
@@ -56,7 +56,7 @@ export default class Glouton {
                     );
                     if (!user) continue;
 
-                    // compatibilité âge rapide
+                    // compatibilité age rapide
                     if (article.age_range !== user.age_range) continue;
 
                     // simulation propre

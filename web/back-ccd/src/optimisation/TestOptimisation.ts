@@ -4,6 +4,7 @@ import Glouton from "./Glouton";
 import Score from "./Score";
 import {UserToChild} from "../entities/UserToChild";
 import {State} from "../entities/enums/State";
+import RecuitSimule from "./RecuitSimule";
 
 
 function runTest(
@@ -21,18 +22,20 @@ function runTest(
 
     const glouton = new Glouton(new Score());
 
+    const rs = new RecuitSimule(new Score());
+
     const result = glouton.optimize(
         articles,
         campaign,
         users
     );
 
-    console.log("Score obtenu :", result.score);
+    console.log("Score obtenu avec Glouton :", result.score);
 
     for (const box of result.boxes) {
         console.log(
             box.box.id_user,
-            "→",
+            "->",
             box.articles.map(a => a.id_article)
         );
     }
@@ -42,7 +45,30 @@ function runTest(
         return;
     }
 
-    console.log("TEST RÉUSSI - Score obtenu :", result.score, ">= Score attendu :", expectedScore);
+    console.log("TEST RÉUSSI - Score obtenu :", result.score, ">= Score attendu :", expectedScore,"\n");
+
+    const result2 = rs.optimize(
+        articles,
+        campaign,
+        users
+    );
+
+    console.log("Score obtenu avec RecuitSimule :", result2.score);
+
+    for (const box of result2.boxes) {
+        console.log(
+            box.box.id_user,
+            "->",
+            box.articles.map(a => a.id_article)
+        );
+    }
+
+    if (result2.score < expectedScore) {
+        console.log("Test échoué. Score obtenu :", result2.score, "< Score attendu :", expectedScore);
+        return;
+    }
+
+    console.log("TEST RÉUSSI - Score obtenu :", result2.score, ">= Score attendu :", expectedScore);
 }
 
 const articles2: Article[] = [
