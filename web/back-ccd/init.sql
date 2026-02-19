@@ -64,5 +64,6 @@ CREATE TABLE Article (
                          state state_enum NOT NULL,
                          price DECIMAL(10, 2),
                          weight FLOAT,
-                         id_box UUID REFERENCES Box(id_box)
+                         id_box UUID REFERENCES Box(id_box),
+                         picture TEXT
 );
