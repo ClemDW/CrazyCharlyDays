@@ -3,15 +3,18 @@ import { AgeRangeKey } from "./enums/AgeRange";
 
 @Entity()
 export class Usertochild extends BaseEntity {
-    @PrimaryGeneratedColumn("uuid")
-    id_user: string;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-    @Column({
-        type: "varchar",
-        length: 10
-    })
-    age_range: AgeRangeKey;
+  @Column("uuid")
+  id_user: string;
 
-    @Column("text", { array: true, nullable: true })
-    preference: string[];
+  @Column({
+    type: "varchar",
+    length: 10,
+  })
+  age_range: AgeRangeKey;
+
+  @Column("text", { array: true, nullable: true })
+  preference: string[];
 }

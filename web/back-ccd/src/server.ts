@@ -62,6 +62,7 @@ app.delete("/users/:id", UserController.delete);
 app.post("/usertochild", UserToChildController.create);
 app.get("/usertochild/:id", UserToChildController.getOne);
 app.put("/usertochild/:id", UserToChildController.update);
+app.delete("/usertochild/:id", UserToChildController.deleteByUser);
 
 app.post("/box", BoxController.create);
 app.get("/box", BoxController.getAll);

@@ -46,4 +46,14 @@ export const UserToChildController = {
         .json({ message: "Erreur lors de la modification" });
     }
   },
+
+  async deleteByUser(req: Request, res: Response) {
+    try {
+      const repo = AppDataSource.getRepository(Usertochild);
+      await repo.delete({ id_user: req.params.id as any });
+      return res.json({ message: "Enfants supprimés avec succès" });
+    } catch (error) {
+      return res.status(500).json({ message: "Erreur lors de la suppression" });
+    }
+  },
 };
