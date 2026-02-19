@@ -1,9 +1,9 @@
-import { Entity, PrimaryColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { AgeRangeKey } from "./enums/AgeRange";
 
 @Entity()
 export class Usertochild extends BaseEntity {
-    @PrimaryColumn("uuid")
+    @PrimaryGeneratedColumn("uuid")
     id_user: string;
 
     @Column({
