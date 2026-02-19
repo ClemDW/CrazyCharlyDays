@@ -38,10 +38,10 @@ export default {
         return (
           matchesSearch &&
           (!this.filters.categorie ||
-            article.categorie === this.filters.categorie) &&
+            article.category === this.filters.categorie) &&
           (!this.filters.tranche_age ||
-            article.tranche_age === this.filters.tranche_age) &&
-          (!this.filters.etat || article.etat === this.filters.etat)
+            article.age_range === this.filters.tranche_age) &&
+          (!this.filters.etat || article.state === this.filters.etat)
         );
       });
     },
@@ -53,17 +53,15 @@ export default {
       return this.filteredArticles.slice(start, start + this.perPage);
     },
     uniqueCategories() {
-      return [
-        ...new Set(this.articles.map((a) => a.categorie).filter(Boolean)),
-      ];
+      return [...new Set(this.articles.map((a) => a.category).filter(Boolean))];
     },
     uniqueTranchesAge() {
       return [
-        ...new Set(this.articles.map((a) => a.tranche_age).filter(Boolean)),
+        ...new Set(this.articles.map((a) => a.age_range).filter(Boolean)),
       ];
     },
     uniqueEtats() {
-      return [...new Set(this.articles.map((a) => a.etat).filter(Boolean))];
+      return [...new Set(this.articles.map((a) => a.state).filter(Boolean))];
     },
   },
   watch: {
@@ -79,14 +77,19 @@ export default {
       this.$api
         .get("/articles")
         .then((response) => {
+          console.log("Articles chargés depuis l'API:", response.data);
           this.articles = response.data;
-         console.log(response.data)
+          // Fallback if data is empty (temporary for dev without backend)
+          if (!this.articles || this.articles.length === 0) {
+            this.useMockData();
+          }
         })
-        .catch(error => {
-          console.log(error)
+        .catch(() => {
+          // Fallback if API fails
+          this.useMockData();
         });
     },
-  
+
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
     },
@@ -270,15 +273,13 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="article in paginatedArticles" :key="article.id">
+          <tr v-for="article in paginatedArticles" :key="article.id_article">
             <td class="cell-name">{{ article.description }}</td>
             <td>
               <span class="category-badge">{{ article.category }}</span>
             </td>
             <td>
-              <span
-                :class="['age-badge', getAgeBadgeClass(article.age_range)]"
-              >
+              <span :class="['age-badge', getAgeBadgeClass(article.age_range)]">
                 {{ article.age_range }}
               </span>
             </td>
