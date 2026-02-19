@@ -1,84 +1,51 @@
 import "reflect-metadata";
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { DataSource } from "typeorm";
 import { Article } from "./entities/Article";
 import { User } from "./entities/User";
 import { Usertochild } from "./entities/UserToChild";
 import { Box } from "./entities/Box";
 import { Campaign } from "./entities/Campaign";
+import { ArticleController } from "./controllers/articleController";
+import { AppDataSource } from "./data-source";
 
-// ────────────────────────────────────────────
-//  DataSource (TypeORM)
-// ────────────────────────────────────────────
-const AppDataSource = new DataSource({
-  type: "postgres",
-  url: process.env.DATABASE_URL,
-  synchronize: false,
-  entities: [Article, User, Usertochild, Box, Campaign],
-});
+
+async function initializeDatabase(): Promise<void> {
+
+  return AppDataSource.initialize()
+    .then(() => {
+      console.log("Connexion à PostgreSQL réussie !");
+    })
+    .catch((error) => {
+      console.error("Erreur de connexion :", error);
+      process.exit(1); // Sortie en cas d'échec
+    });
+
+}
+try {
+  initializeDatabase();
+} catch {
+  console.log("ERREUR CONNECTION BD");
+}
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // ════════════════════════════════════════════
 //  📦 ARTICLES
 // ════════════════════════════════════════════
 
-// POST /articles — Ajouter un article
-app.post("/articles", async (req: Request, res: Response) => {
-  try {
-    const repo = AppDataSource.getRepository(Article);
-    const article = repo.create(req.body);
-    const saved = await repo.save(article);
-    res.status(201).json(saved);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la création de l'article", details: err });
-  }
-});
+// Quand on appelle GET /articles, Express exécute la méthode getAll du contrôleur
+app.get("/articles", ArticleController.getAll);
 
-// GET /articles — Catalogue avec pagination + filtres
-app.get("/articles", async (req: Request, res: Response) => {
-  try {
-    const repo = AppDataSource.getRepository(Article);
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
+// Quand on appelle GET /articles/:id (ex: /articles/123), il exécute getOne
+app.get("/articles/:id", ArticleController.getOne);
 
-    const qb = repo.createQueryBuilder("article");
-
-    // Filtres optionnels
-    if (req.query.cat) {
-      qb.andWhere("article.category = :cat", { cat: req.query.cat });
-    }
-    if (req.query.age) {
-      qb.andWhere("article.age_range = :age", { age: req.query.age });
-    }
-    if (req.query.state) {
-      qb.andWhere("article.state = :state", { state: req.query.state });
-    }
-
-    const [articles, total] = await qb.skip(skip).take(limit).getManyAndCount();
-
-    res.json({
-      data: articles,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    });
-  } catch (err) {
-    res.status(500).json({
-      error: "Erreur lors de la récupération des articles",
-      details: err,
-    });
-  }
-});
+// Quand on fait un POST avec un JSON, il exécute create
+app.post("/articles", ArticleController.create);
 
 // GET /articles/scan/:code_barre — Rechercher par code-barre
 app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
@@ -98,52 +65,8 @@ app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
   }
 });
 
-// GET /articles/:id — Détails d'un article
-app.get("/articles/:id", async (req: Request, res: Response) => {
-  try {
-    const repo = AppDataSource.getRepository(Article);
-    const article = await repo.findOneBy({ id_article: req.params.id as any });
-    if (!article) {
-      return res.status(404).json({ error: "Article non trouvé" });
-    }
-    res.json(article);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la récupération", details: err });
-  }
-});
-
 // PUT /articles/:id — Modifier un article
-app.put("/articles/:id", async (req: Request, res: Response) => {
-  try {
-    const repo = AppDataSource.getRepository(Article);
-    const article = await repo.findOneBy({ id_article: req.params.id as any });
-    if (!article) {
-      return res.status(404).json({ error: "Article non trouvé" });
-    }
-
-    // Vérifier si l'article est lié à une box validée
-    if (article.id_box) {
-      const boxRepo = AppDataSource.getRepository(Box);
-      const box = await boxRepo.findOneBy({ id_box: article.id_box });
-      if (box && box.validated) {
-        return res.status(403).json({
-          error:
-            "Modification interdite : cet article est lié à une box validée",
-        });
-      }
-    }
-
-    repo.merge(article, req.body);
-    const updated = await repo.save(article);
-    res.json(updated);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la modification", details: err });
-  }
-});
+app.put("/articles/:id", ArticleController.update);
 
 // ════════════════════════════════════════════
 //  👥 SUBSCRIBERS (Users)

@@ -1,7 +1,8 @@
 import "reflect-metadata";
 
 import * as dotenv from "dotenv";
-dotenv.config();
+import path from "path";
+dotenv.config({ path: path.join(__dirname, "../../../.env") });
 
 import { DataSource } from "typeorm";
 import { Article } from "./entities/Article";
