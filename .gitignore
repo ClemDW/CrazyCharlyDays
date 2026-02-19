@@ -13,9 +13,10 @@ dist
 dist-ssr
 coverage
 *.local
+web/front-ccd/package-lock.json
 
 # Editor directories and files
-*.vscode/*
+web/front-ccd/.vscode/*
 !.vscode/extensions.json
 .idea
 *.suo
