@@ -5,7 +5,6 @@ import { Usertochild } from "../entities/UserToChild";
 import { Article } from "../entities/Article";
 import { Box } from "../entities/Box";
 import * as fs from "fs/promises";
-import {Box} from "../entities/Box";
 
 type RecuitOptions = {
     initialTemperature?: number;
