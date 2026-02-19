@@ -68,5 +68,6 @@ CREATE TABLE Article (
                          price DECIMAL(10, 2),
                          weight FLOAT,
                          id_box UUID REFERENCES Box(id_box),
-                         picture TEXT
+                         picture TEXT,
+                         code_barre VARCHAR(100)
 );

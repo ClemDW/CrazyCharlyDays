@@ -33,6 +33,12 @@ import { RouterLink } from "vue-router";
         <h2>Liste des abonnés</h2>
         <p>Consulter les abonnés, tranches d'âge et préférences.</p>
       </RouterLink>
+
+      <RouterLink to="/admin/stats" class="dash-card stats-card">
+        <span class="card-icon">📊</span>
+        <h2>Statistiques</h2>
+        <p>Analyse des stocks, abonnés et performances.</p>
+      </RouterLink>
     </div>
   </div>
 </template>
