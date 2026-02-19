@@ -2,12 +2,12 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { Article } from "./entities/Article";
-import { User } from "./entities/User";
-import { Usertochild } from "./entities/UserToChild";
-import { Box } from "./entities/Box";
-import { Campaign } from "./entities/Campaign";
 import { ArticleController } from "./controllers/articleController";
+import { UserController } from "./controllers/userController";
 import { AppDataSource } from "./data-source";
+import { UserToChildController } from "./controllers/userToChildController";
+import { BoxController } from "./controllers/boxController";
+import { CampaignController } from "./controllers/campaignController";
 
 const app = express();
 app.use(cors());
@@ -15,20 +15,10 @@ app.use(express.json());
 
 const PORT = 3000;
 
-// ════════════════════════════════════════════
-//  📦 ARTICLES
-// ════════════════════════════════════════════
 
-// Quand on appelle GET /articles, Express exécute la méthode getAll du contrôleur
 app.get("/articles", ArticleController.getAll);
-
-// Quand on appelle GET /articles/:id (ex: /articles/123), il exécute getOne
 app.get("/articles/:id", ArticleController.getOne);
-
-// Quand on fait un POST avec un JSON, il exécute create
 app.post("/articles", ArticleController.create);
-
-// GET /articles/scan/:code_barre — Rechercher par code-barre
 app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
   try {
     const repo = AppDataSource.getRepository(Article);
@@ -47,6 +37,35 @@ app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
 });
 
 app.put("/articles/:id", ArticleController.update);
+
+
+
+app.post("/users", UserController.create);
+app.get("/users", UserController.getAll);
+app.get("/users/:id", UserController.getOne);
+app.put("/users/:id", UserController.update);
+app.delete("/users/:id", UserController.delete);
+
+
+
+app.post("/usertochild", UserToChildController.create);
+app.get("/usertochild/:id", UserToChildController.getOne);
+app.put("/usertochild/:id", UserToChildController.update);
+
+
+
+app.post("/box", BoxController.create);
+app.get("/box", BoxController.getAll);
+app.get("/box/:id", BoxController.getOne);
+app.put("/box/:id", BoxController.update);
+
+
+
+app.post("/campaign", CampaignController.create);
+app.get("/campaign", CampaignController.getAll);
+app.get("/campaign/:id", CampaignController.getOne);
+app.put("/campaign/:id", CampaignController.update);
+
 
 AppDataSource.initialize()
   .then(() => {
