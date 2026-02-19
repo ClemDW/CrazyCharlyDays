@@ -1,8 +1,14 @@
-drop table Campaign cascade constraints;
-drop table User cascade constraints;
-drop table UserToChild cascade constraints;
-drop table Box cascade constraints;
-drop table Article cascade constraints;
+drop table Campaign cascade;
+drop table "User" cascade;
+drop table UserToChild cascade;
+drop table Box cascade;
+drop table Article cascade;
+
+drop TYPE age_range_enum;
+drop TYPE category_enum;
+drop TYPE state_enum;
+drop TYPE role_enum;
+drop TYPE status_enum;
 
 -- Types ENUM
 CREATE TYPE age_range_enum AS ENUM ('BB', 'PE', 'EN', 'AD');
@@ -23,7 +29,7 @@ CREATE TABLE Campaign (
 );
 
 -- Table User
-CREATE TABLE User (
+CREATE TABLE "User" (
                         id_user UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                         name VARCHAR(255) NOT NULL,
                         family_name VARCHAR(255) NOT NULL,
@@ -33,7 +39,7 @@ CREATE TABLE User (
 
 -- Table UserToChild
 CREATE TABLE UserToChild (
-                             id_user UUID REFERENCES User(id_user),
+                             id_user UUID REFERENCES "User"(id_user),
                              age_range age_range_enum NOT NULL,
                              preference TEXT[]
 );
@@ -42,7 +48,7 @@ CREATE TABLE UserToChild (
 CREATE TABLE Box (
                      id_box UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                      id_camp UUID REFERENCES Campaign(id_camp),
-                     id_user UUID REFERENCES User(id_user),
+                     id_user UUID REFERENCES "User"(id_user),
                      score_box INTEGER,
                      total_weight FLOAT,
                      total_price DECIMAL(10, 2),
