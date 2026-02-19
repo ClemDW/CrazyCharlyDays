@@ -68,3 +68,4 @@ __screenshots__/
 !.idea/checkstyle-idea.xml
 
 */node_modules/*
+/web/back-ccd/node_modules/
