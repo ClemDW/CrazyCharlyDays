@@ -38,10 +38,10 @@ export default {
         return (
           matchesSearch &&
           (!this.filters.categorie ||
-            article.categorie === this.filters.categorie) &&
+            article.category === this.filters.categorie) &&
           (!this.filters.tranche_age ||
-            article.tranche_age === this.filters.tranche_age) &&
-          (!this.filters.etat || article.etat === this.filters.etat)
+            article.age_range === this.filters.tranche_age) &&
+          (!this.filters.etat || article.state === this.filters.etat)
         );
       });
     },
@@ -54,16 +54,16 @@ export default {
     },
     uniqueCategories() {
       return [
-        ...new Set(this.articles.map((a) => a.categorie).filter(Boolean)),
+        ...new Set(this.articles.map((a) => a.category).filter(Boolean)),
       ];
     },
     uniqueTranchesAge() {
       return [
-        ...new Set(this.articles.map((a) => a.tranche_age).filter(Boolean)),
+        ...new Set(this.articles.map((a) => a.age_range).filter(Boolean)),
       ];
     },
     uniqueEtats() {
-      return [...new Set(this.articles.map((a) => a.etat).filter(Boolean))];
+      return [...new Set(this.articles.map((a) => a.state).filter(Boolean))];
     },
   },
   watch: {
@@ -79,11 +79,11 @@ export default {
       this.$api
         .get("/articles")
         .then((response) => {
+          console.log("Articles chargés depuis l'API:", response.data);
           this.articles = response.data;
-         console.log(response.data)
         })
         .catch(error => {
-          console.log(error)
+          console.error("Erreur lors du chargement des articles:", error);
         });
     },
   
@@ -270,7 +270,7 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="article in paginatedArticles" :key="article.id">
+          <tr v-for="article in paginatedArticles" :key="article.id_article">
             <td class="cell-name">{{ article.description }}</td>
             <td>
               <span class="category-badge">{{ article.category }}</span>
