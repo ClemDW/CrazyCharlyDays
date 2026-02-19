@@ -47,7 +47,7 @@ export default class Solver {
         for (const box of result.boxes) {
             // Récupérer les infos de l'utilisateur
             const user = await User.findOneBy({ id_user: box.box.id_user });
-            const userName = user ? user.name : "Unknown";
+            const userName = user.name;
 
             for (const article of box.articles) {
                 // (1) Le prénom de l’abonné
@@ -56,7 +56,7 @@ export default class Solver {
                 // (4) La tranche d’âge de l’article
                 // (5) L’état de l’article
 
-                const articleId = article.external_id || article.id_article; // Utilise external_id si dispo
+                const articleId = article.id_article;
                 const category = article.category;
                 const ageRange = article.age_range;
                 const state = article.state;
