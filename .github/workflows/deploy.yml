@@ -1,9 +1,10 @@
-name: Deploy to Docketu
+name: Push to docketu
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
