@@ -1,6 +1,14 @@
-import { BoxWithArticle, Campaign, State, UserToChild, ScoreResult } from "./Temp";
+import { BoxWithArticle } from "./Temp";
+import {Campaign} from "../entities/Campaign";
+import {UserToChild} from "../entities/UserToChild";
+import {State} from "../entities/enums/State";
 
 const INVALID_SCORE = -9999999999999;
+
+type ScoreResult = {
+    score: number
+    perBoxScore: Map<string, number>
+}
 
 export default class Score {
 
