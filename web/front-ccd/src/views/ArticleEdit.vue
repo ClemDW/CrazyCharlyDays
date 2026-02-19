@@ -11,7 +11,6 @@ export default {
         state: "",
         price: 0,
         weight: 0,
-        code_barre: "",
       },
       loading: true,
       submitting: false,
@@ -34,7 +33,6 @@ export default {
           state: this.article.state,
           price: this.article.price,
           weight: this.article.weight,
-          code_barre: this.article.code_barre || "",
         };
       } catch (err) {
         console.error("Erreur chargement article:", err);
@@ -148,15 +146,6 @@ export default {
               required
             />
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>Code-barre / QR Code (Optionnel)</label>
-          <input
-            v-model="form.code_barre"
-            type="text"
-            placeholder="Scannez ou saisissez un code..."
-          />
         </div>
 
         <div class="actions">

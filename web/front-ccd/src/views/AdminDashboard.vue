@@ -39,6 +39,12 @@ import { RouterLink } from "vue-router";
         <h2>Statistiques</h2>
         <p>Analyse des stocks, abonnés et performances.</p>
       </RouterLink>
+
+      <RouterLink to="/admin/campaigns" class="dash-card">
+        <span class="card-icon">📋</span>
+        <h2>Historique campagnes</h2>
+        <p>Vue d'ensemble de toutes les campagnes réalisées.</p>
+      </RouterLink>
     </div>
   </div>
 </template>

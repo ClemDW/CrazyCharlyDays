@@ -121,3 +121,8 @@ la logique de déploiement est décrite dans un unique fichier
 `deploy.yml` versionné dans le dépôt. N'importe quel membre de l'équipe
 peut comprendre, auditer ou modifier le pipeline sans documentation
 externe.
+
+Un schéma de l'infrastructure de push sur docketu sur chaque push sur main est disponible à la racine de dépôt GitHub
+
+
+-- Jus de Raison --

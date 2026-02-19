@@ -6,7 +6,7 @@ import SubscriberChildrenForm from "@/components/SubscriberChildrenForm.vue";
 import { type Child, DEFAULT_CATEGORIES } from "@/constants/subscriber";
 import { getCookie, setCookie } from "@/utils/cookie";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // --- State ---
 const lastName = ref("");
