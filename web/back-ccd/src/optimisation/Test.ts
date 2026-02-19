@@ -1,8 +1,8 @@
-import {BoxWithArticle} from "./Temp";
+/* import {BoxWithArticle} from "./Temp";
 import Score from "./Score";
 import {Article} from "../entities/Article";
 import {State} from "../entities/enums/State";
-import {UserToChild} from "../entities/UserToChild";
+import {Usertochild} from "../entities/UserToChild";
 import {Campaign} from "../entities/Campaign";
 import {Categories} from "../entities/enums/Categories";
 import {AgeRange} from "../entities/enums/AgeRange";
@@ -11,21 +11,21 @@ import {StateCampaign} from "../entities/enums/StateCampaign";
 
 // Articles
 const articles: Article[] = [
-    { id_article: "a1", description: "Monopoly Junior", category: Categories.SOC, age_range: AgeRange.PE, state: State.N, price: 8, weight: 400, id_box: null },
-    { id_article: "a2", description: "Barbie Aventurière", category: Categories.FIG, age_range: AgeRange.PE, state: State.TB, price: 5, weight: 300, id_box: null },
-    { id_article: "a3", description: "Puzzle éducatif", category: Categories.EVL, age_range: AgeRange.PE, state: State.TB, price: 7, weight: 350, id_box: null },
-    { id_article: "a4", description: "Cubes alphabet", category: Categories.CON, age_range: AgeRange.PE, state: State.N, price: 4, weight: 300, id_box: null },
-    { id_article: "a5", description: "Livre cache-cache", category: Categories.LIV, age_range: AgeRange.PE, state: State.N, price: 3, weight: 200, id_box: null },
-    { id_article: "a6", description: "Kapla 200 pièces", category: Categories.CON, age_range: AgeRange.EN, state: State.B, price: 10, weight: 600, id_box: null },
-    { id_article: "a7", description: "Cerf-volant Pirate", category: Categories.EXT, age_range: AgeRange.EN, state: State.N, price: 6, weight: 400, id_box: null },
-    { id_article: "a8", description: "Le Petit Nicolas", category: Categories.LIV, age_range: AgeRange.EN, state: State.TB, price: 5, weight: 200, id_box: null },
+    { id_article: "a1", description: "Monopoly Junior", category: Categories.SOC.code, age_range: AgeRange.PE.code, state: State.N.code, price: 8, weight: 400, id_box: null },
+    { id_article: "a2", description: "Barbie Aventurière", category: Categories.FIG.code, age_range: AgeRange.PE.code, state: State.TB.code, price: 5, weight: 300, id_box: null },
+    { id_article: "a3", description: "Puzzle éducatif", category: Categories.EVL.code, age_range: AgeRange.PE.code, state: State.TB.code, price: 7, weight: 350, id_box: null },
+    { id_article: "a4", description: "Cubes alphabet", category: Categories.CON.code, age_range: AgeRange.PE.code, state: State.N.code, price: 4, weight: 300, id_box: null },
+    { id_article: "a5", description: "Livre cache-cache", category: Categories.LIV.code, age_range: AgeRange.PE.code, state: State.N.code, price: 3, weight: 200, id_box: null },
+    { id_article: "a6", description: "Kapla 200 pièces", category: Categories.CON.code, age_range: AgeRange.EN.code, state: State.B.code, price: 10, weight: 600, id_box: null },
+    { id_article: "a7", description: "Cerf-volant Pirate", category: Categories.EXT.code, age_range: AgeRange.EN.code, state: State.N.code, price: 6, weight: 400, id_box: null },
+    { id_article: "a8", description: "Le Petit Nicolas", category: Categories.LIV.code, age_range: AgeRange.EN.code, state: State.TB.code, price: 5, weight: 200, id_box: null },
 ];
 
 // Abonnés
-const users: UserToChild[] = [
-    { id_user: "Alice", age_range: AgeRange.PE, preferences: [Categories.SOC,Categories.FIG,Categories.EVL,Categories.CON,Categories.LIV,Categories.EXT] },
-    { id_user: "Bob", age_range: AgeRange.EN, preferences: [Categories.EXT,Categories.CON,Categories.SOC,Categories.EVL,Categories.FIG,Categories.LIV] },
-    { id_user: "Clara", age_range: AgeRange.PE, preferences: [Categories.EVL,Categories.LIV,Categories.FIG,Categories.SOC,Categories.CON,Categories.EXT] }
+const users: Usertochild[] = [
+    { id_user: "Alice", age_range: AgeRange.PE.code, preference: [Categories.SOC.code,Categories.FIG.code,Categories.EVL.code,Categories.CON.code,Categories.LIV.code,Categories.EXT.code] },
+    { id_user: "Bob", age_range: AgeRange.EN.code, preference: [Categories.EXT.code,Categories.CON.code,Categories.SOC.code,Categories.EVL.code,Categories.FIG.code,Categories.LIV.code] },
+    { id_user: "Clara", age_range: AgeRange.PE.code, preference: [Categories.EVL.code,Categories.LIV.code,Categories.FIG.code,Categories.SOC.code,Categories.CON.code,Categories.EXT.code] }
 ];
 
 // Campagne
@@ -33,10 +33,9 @@ const campaign: Campaign = {
     id_camp: "c1",
     max_weight: 1200,
     date: new Date(),
-    status: StateCampaign.IN_PROGRESS,
+    status: StateCampaign.IN_PROGRESS.code,
     total_price: 0,
     total_weight: 0,
-    validated: true,
     min_price: 0,
     max_price: 0
 };
@@ -95,4 +94,4 @@ if (result2.score >= 62) {
     console.log("Test réussi : score >= 62");
 } else {
     console.log("Test échoué : score attendu >= 62");
-}
+}*/

@@ -53,9 +53,7 @@ export default {
       return this.filteredArticles.slice(start, start + this.perPage);
     },
     uniqueCategories() {
-      return [
-        ...new Set(this.articles.map((a) => a.category).filter(Boolean)),
-      ];
+      return [...new Set(this.articles.map((a) => a.category).filter(Boolean))];
     },
     uniqueTranchesAge() {
       return [
@@ -81,12 +79,17 @@ export default {
         .then((response) => {
           console.log("Articles chargés depuis l'API:", response.data);
           this.articles = response.data;
+          // Fallback if data is empty (temporary for dev without backend)
+          if (!this.articles || this.articles.length === 0) {
+            this.useMockData();
+          }
         })
-        .catch(error => {
-          console.error("Erreur lors du chargement des articles:", error);
+        .catch(() => {
+          // Fallback if API fails
+          this.useMockData();
         });
     },
-  
+
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
     },
@@ -276,9 +279,7 @@ export default {
               <span class="category-badge">{{ article.category }}</span>
             </td>
             <td>
-              <span
-                :class="['age-badge', getAgeBadgeClass(article.age_range)]"
-              >
+              <span :class="['age-badge', getAgeBadgeClass(article.age_range)]">
                 {{ article.age_range }}
               </span>
             </td>

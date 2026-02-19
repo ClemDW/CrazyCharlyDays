@@ -5,13 +5,13 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Double } from "type
 @Entity()
 export class Box extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
-    id_box: UUID;
+    id_box: string;
 
     @Column()
-    id_camp: UUID;
+    id_camp: string;
 
     @Column()
-    id_user: UUID;
+    id_user: string;
 
     @Column()
     score_box: number;
