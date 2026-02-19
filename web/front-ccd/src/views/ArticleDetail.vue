@@ -12,12 +12,13 @@ export default {
     fetchArticle() {
       this.loading = true;
       this.error = null;
-      this.$api.get(`/articles/${this.id}`)
-        .then(response => {
+      this.$api
+        .get(`/articles/${this.id}`)
+        .then((response) => {
           this.article = response.data;
           this.loading = false;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Erreur lors de la récupération de l'article:", error);
           this.error = "Impossible de charger l'article.";
           this.loading = false;
@@ -72,12 +73,22 @@ export default {
           <span class="label">Poids</span>
           <span class="value">{{ article.weight }} kg</span>
         </div>
+        <div v-if="article.code_barre" class="info-item">
+          <span class="label">Code-barre</span>
+          <span class="value code">{{ article.code_barre }}</span>
+        </div>
       </div>
 
       <div class="actions">
         <button
-          class="action-btn primary" 
-          @click="$router.push({ name: 'article-edit', params: { id: article.id_article } })">
+          class="action-btn primary"
+          @click="
+            $router.push({
+              name: 'article-edit',
+              params: { id: article.id_article },
+            })
+          "
+        >
           Modifier l'article
         </button>
       </div>

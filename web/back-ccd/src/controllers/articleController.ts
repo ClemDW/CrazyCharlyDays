@@ -1,16 +1,26 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { Article } from "../entities/Article";
+import * as fs from "fs";
+import * as path from "path";
 
 export const ArticleController = {
   async create(req: Request, res: Response) {
     try {
       const repo = AppDataSource.getRepository(Article);
 
-      // Build article data from body + uploaded file
+      // Build article data from body
       const articleData = { ...req.body };
-      if ((req as any).file) {
-        articleData.picture = (req as any).file.filename;
+
+      // Handle Base64 image
+      if (req.body.picture && req.body.picture.startsWith("data:image")) {
+        const base64Data = req.body.picture.split(";base64,").pop();
+        const extension = req.body.picture.split(";")[0].split("/")[1];
+        const filename = `img-${Date.now()}-${Math.round(Math.random() * 1e9)}.${extension}`;
+        const uploadPath = path.join(__dirname, "../../images", filename);
+
+        fs.writeFileSync(uploadPath, base64Data, { encoding: "base64" });
+        articleData.picture = filename;
       }
 
       const newArticle = repo.create(articleData);
