@@ -1,185 +1,106 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 
-interface Article {
+type Article = {
+  id_article: string;
   description: string;
   category: string;
-  ageRange: string;
+  age_range: string;
   state: string;
   weight: number;
   price: number;
-}
+};
 
-interface Box {
-  id: number;
-  subscriberEmail: string;
-  subscriberName: string;
-  childAge: string;
-  score: number;
-  articles: Article[];
+type AdminBox = {
+  id_box: string;
+  score_box: number;
+  total_weight: number;
+  total_price: number;
   validated: boolean;
+  user: {
+    name: string;
+    family_name: string;
+    email: string;
+  } | null;
+  campaign: {
+    date: string;
+    status: string;
+  } | null;
+  articles: Article[];
+};
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+const boxes = ref<AdminBox[]>([]);
+const loading = ref(false);
+const errorMessage = ref("");
+const successMessage = ref("");
+const validatingIds = ref<Set<string>>(new Set());
+
+async function fetchBoxes() {
+  loading.value = true;
+  errorMessage.value = "";
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/box/admin`);
+    if (!response.ok) {
+      throw new Error("Impossible de charger les box");
+    }
+    const data = await response.json();
+    boxes.value = Array.isArray(data) ? data : [];
+  } catch (error) {
+    errorMessage.value = "Erreur lors du chargement des box composées.";
+  } finally {
+    loading.value = false;
+  }
 }
 
-// --- Mock data ---
-const boxes = reactive<Box[]>([
-  {
-    id: 1,
-    subscriberEmail: "marie@test.com",
-    subscriberName: "Marie Dupont",
-    childAge: "PE — 3-6 ans",
-    score: 87,
-    validated: true,
-    articles: [
-      {
-        description: "Puzzle en bois 24 pièces",
-        category: "Jeux d'éveil et éducatifs",
-        ageRange: "PE",
-        state: "Très bon état",
-        weight: 350,
-        price: 4.5,
+async function validateBox(boxId: string) {
+  validatingIds.value.add(boxId);
+  errorMessage.value = "";
+  successMessage.value = "";
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/box/${boxId}/validate`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
       },
-      {
-        description: "Figurine dinosaure T-Rex",
-        category: "Figurines et poupées",
-        ageRange: "PE",
-        state: "Bon état",
-        weight: 200,
-        price: 3.0,
-      },
-      {
-        description: "Livre « Le petit prince »",
-        category: "Livres jeunesse",
-        ageRange: "PE",
-        state: "Neuf",
-        weight: 300,
-        price: 5.0,
-      },
-      {
-        description: "Jeu de construction 50 pièces",
-        category: "Jeux de construction",
-        ageRange: "PE",
-        state: "Très bon état",
-        weight: 600,
-        price: 7.0,
-      },
-      {
-        description: "Jeu de cartes « 7 familles »",
-        category: "Jeux de société",
-        ageRange: "PE",
-        state: "Neuf",
-        weight: 150,
-        price: 2.5,
-      },
-      {
-        description: "Ballon en mousse",
-        category: "Jeux d'extérieur",
-        ageRange: "PE",
-        state: "Bon état",
-        weight: 250,
-        price: 2.5,
-      },
-    ],
-  },
-  {
-    id: 2,
-    subscriberEmail: "jean@test.com",
-    subscriberName: "Jean Martin",
-    childAge: "EN — 6-10 ans",
-    score: 72,
-    validated: false,
-    articles: [
-      {
-        description: "Monopoly Junior",
-        category: "Jeux de société",
-        ageRange: "EN",
-        state: "Bon état",
-        weight: 800,
-        price: 8.0,
-      },
-      {
-        description: "Robot à assembler",
-        category: "Jeux de construction",
-        ageRange: "EN",
-        state: "Neuf",
-        weight: 450,
-        price: 12.0,
-      },
-      {
-        description: "BD Astérix tome 5",
-        category: "Livres jeunesse",
-        ageRange: "EN",
-        state: "Très bon état",
-        weight: 280,
-        price: 4.0,
-      },
-      {
-        description: "Corde à sauter",
-        category: "Jeux d'extérieur",
-        ageRange: "EN",
-        state: "Neuf",
-        weight: 120,
-        price: 2.0,
-      },
-    ],
-  },
-  {
-    id: 3,
-    subscriberEmail: "sophie@test.com",
-    subscriberName: "Sophie Leroy",
-    childAge: "BB — 0-3 ans",
-    score: 93,
-    validated: true,
-    articles: [
-      {
-        description: "Hochet en bois",
-        category: "Jeux d'éveil et éducatifs",
-        ageRange: "BB",
-        state: "Neuf",
-        weight: 100,
-        price: 3.0,
-      },
-      {
-        description: "Peluche lapin",
-        category: "Figurines et poupées",
-        ageRange: "BB",
-        state: "Très bon état",
-        weight: 200,
-        price: 5.0,
-      },
-      {
-        description: "Cubes empilables",
-        category: "Jeux de construction",
-        ageRange: "BB",
-        state: "Neuf",
-        weight: 400,
-        price: 6.0,
-      },
-      {
-        description: "Imagier animaux",
-        category: "Livres jeunesse",
-        ageRange: "BB",
-        state: "Neuf",
-        weight: 250,
-        price: 4.5,
-      },
-      {
-        description: "Tapis d'éveil pliant",
-        category: "Jeux d'éveil et éducatifs",
-        ageRange: "BB",
-        state: "Bon état",
-        weight: 500,
-        price: 8.0,
-      },
-    ],
-  },
-]);
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data?.message || "Validation impossible");
+    }
+
+    boxes.value = boxes.value.map((box) =>
+      box.id_box === boxId ? { ...box, validated: true } : box,
+    );
+    successMessage.value = data?.message || "Box validée avec succès.";
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : "Erreur lors de la validation de la box.";
+  } finally {
+    validatingIds.value.delete(boxId);
+  }
+}
+
+onMounted(fetchBoxes);
 
 // Computed helpers
-function totalWeight(box: Box): number {
+function totalWeight(box: AdminBox): number {
+  if (typeof box.total_weight === "number" && box.total_weight > 0) {
+    return box.total_weight;
+  }
   return box.articles.reduce((sum, a) => sum + a.weight, 0);
 }
 
-function totalPrice(box: Box): number {
+function totalPrice(box: AdminBox): number {
+  if (typeof box.total_price === "number" && box.total_price > 0) {
+    return box.total_price;
+  }
   return box.articles.reduce((sum, a) => sum + a.price, 0);
 }
 
@@ -190,9 +111,9 @@ function scoreClass(score: number): string {
 }
 
 // Expanded toggle
-const expandedIds = ref<Set<number>>(new Set());
+const expandedIds = ref<Set<string>>(new Set());
 
-function toggleExpand(id: number) {
+function toggleExpand(id: string) {
   if (expandedIds.value.has(id)) {
     expandedIds.value.delete(id);
   } else {
@@ -208,45 +129,64 @@ function toggleExpand(id: number) {
       Visualisation de toutes les box proposées par l'optimisation.
     </p>
 
-    <p class="summary">
+    <p v-if="errorMessage" class="msg error">{{ errorMessage }}</p>
+    <p v-if="successMessage" class="msg success">{{ successMessage }}</p>
+    <p v-if="loading" class="summary">Chargement des box...</p>
+
+    <p v-else class="summary">
       {{ boxes.length }} box au total ·
       {{ boxes.filter((b) => b.validated).length }} validées ·
       {{ boxes.filter((b) => !b.validated).length }} en attente
     </p>
 
-    <div v-for="box in boxes" :key="box.id" class="box-card">
+    <div v-for="box in boxes" :key="box.id_box" class="box-card">
       <!-- Header row -->
-      <div class="box-header" @click="toggleExpand(box.id)">
+      <div class="box-header" @click="toggleExpand(box.id_box)">
         <div class="box-title">
           <span class="expand-icon">{{
-            expandedIds.has(box.id) ? "▾" : "▸"
+            expandedIds.has(box.id_box) ? "▾" : "▸"
           }}</span>
-          <h2>📦 Box #{{ box.id }}</h2>
+          <h2>📦 Box #{{ box.id_box.slice(0, 8) }}</h2>
           <span
             :class="['badge', box.validated ? 'badge-ok' : 'badge-pending']"
           >
             {{ box.validated ? "✅ Validée" : "⏳ En attente" }}
           </span>
         </div>
-        <div :class="['score', scoreClass(box.score)]">
-          {{ box.score }}<small>/100</small>
+        <div :class="['score', scoreClass(box.score_box)]">
+          {{ box.score_box }}<small>/100</small>
         </div>
       </div>
 
       <!-- Meta -->
       <div class="box-meta">
         <span
-          ><strong>{{ box.subscriberName }}</strong> ({{
-            box.subscriberEmail
+          ><strong
+            >{{ box.user?.name }} {{ box.user?.family_name || "" }}</strong
+          >
+          ({{
+            box.user?.email || "Email inconnu"
           }})</span
         >
-        <span>Âge : {{ box.childAge }}</span>
+        <span v-if="box.campaign"
+          >Campagne : {{ new Date(box.campaign.date).toLocaleDateString() }}</span
+        >
         <span>Poids : {{ totalWeight(box) }} g</span>
         <span>Prix : {{ totalPrice(box).toFixed(2) }} €</span>
       </div>
 
+      <div v-if="!box.validated" class="box-actions">
+        <button
+          class="btn-validate"
+          :disabled="validatingIds.has(box.id_box)"
+          @click.stop="validateBox(box.id_box)"
+        >
+          {{ validatingIds.has(box.id_box) ? "Validation..." : "Valider cette box" }}
+        </button>
+      </div>
+
       <!-- Expanded articles table -->
-      <div v-if="expandedIds.has(box.id)" class="box-details">
+      <div v-if="expandedIds.has(box.id_box)" class="box-details">
         <table class="articles-table">
           <thead>
             <tr>
@@ -264,7 +204,7 @@ function toggleExpand(id: number) {
               <td class="cell-num">{{ idx + 1 }}</td>
               <td>{{ article.description }}</td>
               <td>{{ article.category }}</td>
-              <td>{{ article.ageRange }}</td>
+              <td>{{ article.age_range }}</td>
               <td>{{ article.state }}</td>
               <td class="cell-num">{{ article.weight }} g</td>
               <td class="cell-num">{{ article.price.toFixed(2) }} €</td>
@@ -309,6 +249,23 @@ h1 {
   font-size: 0.88rem;
   color: #888;
   margin-bottom: 1.5rem;
+}
+
+.msg {
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.msg.error {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.msg.success {
+  background: #e8f5e9;
+  color: #2e7d32;
 }
 
 /* Box card */
@@ -402,6 +359,26 @@ h1 {
   padding: 0 1.25rem 0.75rem;
   font-size: 0.85rem;
   color: #555;
+}
+
+.box-actions {
+  padding: 0 1.25rem 1rem;
+}
+
+.btn-validate {
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  background: #2e7d32;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-validate:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 /* Details */

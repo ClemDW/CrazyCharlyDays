@@ -67,8 +67,11 @@ app.put("/usertochild/:id", UserToChildController.update);
 
 app.post("/box", BoxController.create);
 app.get("/box", BoxController.getAll);
+app.get("/box/admin", BoxController.getAdminView);
+app.get("/box/history", BoxController.getHistory);
 app.get("/box/:id", BoxController.getOne);
 app.put("/box/:id", BoxController.update);
+app.put("/box/:id/validate", BoxController.validate);
 
 
 
