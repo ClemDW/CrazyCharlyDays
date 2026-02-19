@@ -21,7 +21,7 @@ const PORT = 3000;
  * Utilise les données existantes en base (dernière campagne, tous les articles).
  * Retourne le fichier CSV résultant.
  */
-app.post("/optimize", OptimizationController.optimize);
+app.get("/optimize", OptimizationController.optimize);
 
 // ════════════════════════════════════════════
 //  📦 ARTICLES
