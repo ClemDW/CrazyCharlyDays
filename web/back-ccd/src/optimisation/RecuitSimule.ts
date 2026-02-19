@@ -3,6 +3,7 @@ import Score from "./Score";
 import { Campaign } from "../entities/Campaign";
 import { Usertochild } from "../entities/UserToChild";
 import { Article } from "../entities/Article";
+import { Box } from "../entities/Box";
 import * as fs from "fs/promises";
 
 type RecuitOptions = {
