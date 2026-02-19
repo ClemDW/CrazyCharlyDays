@@ -8,7 +8,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "lib": ["esnext", "dom"],
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*.ts"
