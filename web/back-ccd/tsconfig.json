@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES2022",
+    "module": "CommonJS", // On repasse en CommonJS
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    
-    "strictPropertyInitialization": false,
-    "lib": ["es6"],
-    "module": "commonjs"
-  }
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }
