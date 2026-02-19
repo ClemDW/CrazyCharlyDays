@@ -72,17 +72,17 @@ function runTest(
 }
 
 const articles2: Article[] = [
-    { id_article: "a1", description: "Loto des animaux", category: "SOC", age_range: "PE", state: State.N, price: 5, weight: 300 },
-    { id_article: "a2", description: "Poupée Clara", category: "FIG", age_range: "PE", state: State.TB, price: 8, weight: 400 },
-    { id_article: "a3", description: "Duplo Ferme", category: "CON", age_range: "PE", state: State.B, price: 9, weight: 500 },
-    { id_article: "a4", description: "Ballon sauteur", category: "EXT", age_range: "PE", state: State.N, price: 4, weight: 500 },
-    { id_article: "a5", description: "Imagier sonore", category: "EVL", age_range: "PE", state: State.TB, price: 6, weight: 250 },
-    { id_article: "a6", description: "T'choupi à l'école", category: "LIV", age_range: "PE", state: State.N, price: 3, weight: 150 },
+    { id_article: "a1", description: "Loto des animaux", category: "SOC", age_range: "PE", state: State.N.code, price: 5, weight: 300 },
+    { id_article: "a2", description: "Poupée Clara", category: "FIG", age_range: "PE", state: State.TB.code, price: 8, weight: 400 },
+    { id_article: "a3", description: "Duplo Ferme", category: "CON", age_range: "PE", state: State.B.code, price: 9, weight: 500 },
+    { id_article: "a4", description: "Ballon sauteur", category: "EXT", age_range: "PE", state: State.N.code, price: 4, weight: 500 },
+    { id_article: "a5", description: "Imagier sonore", category: "EVL", age_range: "PE", state: State.TB.code, price: 6, weight: 250 },
+    { id_article: "a6", description: "T'choupi à l'école", category: "LIV", age_range: "PE", state: State.N.code, price: 3, weight: 150 },
 ];
 
 const users2: UserToChild[] = [
-    { id_user: "Emma", age_range: "PE", preferences: ["SOC","EVL","FIG","CON","EXT","LIV"] },
-    { id_user: "Lucas", age_range: "PE", preferences: ["EXT","CON","SOC","FIG","EVL","LIV"] }
+    { id_user: "Emma", age_range: "PE", preference: ["SOC","EVL","FIG","CON","EXT","LIV"] },
+    { id_user: "Lucas", age_range: "PE", preference: ["EXT","CON","SOC","FIG","EVL","LIV"] }
 ];
 
 runTest(
@@ -98,28 +98,28 @@ runTest(
 );
 
 const articles3: Article[] = [
-    { id_article: "a1", description: "Uno Junior", category: "SOC", age_range: "PE", state: State.N, price: 5, weight: 200 },
-    { id_article: "a2", description: "Poupée Léa", category: "FIG", age_range: "PE", state: State.TB, price: 7, weight: 350 },
-    { id_article: "a3", description: "Cubes empilables", category: "CON", age_range: "PE", state: State.B, price: 4, weight: 300 },
-    { id_article: "a4", description: "Trottinette 3 roues", category: "EXT", age_range: "PE", state: State.N, price: 15, weight: 900 },
-    { id_article: "a5", description: "Livre cache-cache", category: "LIV", age_range: "PE", state: State.TB, price: 3, weight: 150 },
-    { id_article: "a6", description: "Puzzle animaux", category: "EVL", age_range: "PE", state: State.N, price: 6, weight: 250 },
-    { id_article: "a7", description: "Risk Junior", category: "SOC", age_range: "EN", state: State.B, price: 9, weight: 500 },
-    { id_article: "a8", description: "Figurine chevalier", category: "FIG", age_range: "EN", state: State.N, price: 6, weight: 200 },
-    { id_article: "a9", description: "Lego City", category: "CON", age_range: "EN", state: State.TB, price: 20, weight: 700 },
-    { id_article: "a10", description: "Corde à sauter", category: "EXT", age_range: "EN", state: State.N, price: 2, weight: 100 },
-    { id_article: "a11", description: "Globe interactif", category: "EVL", age_range: "EN", state: State.B, price: 18, weight: 600 },
-    { id_article: "a12", description: "Peluche musicale", category: "EVL", age_range: "BB", state: State.TB, price: 8, weight: 250 },
-    { id_article: "a13", description: "Livre tissu jungle", category: "LIV", age_range: "BB", state: State.N, price: 4, weight: 100 },
-    { id_article: "a14", description: "Hochet dentition", category: "EVL", age_range: "BB", state: State.B, price: 3, weight: 80 },
-    { id_article: "a15", description: "Cube sensoriel", category: "CON", age_range: "BB", state: State.TB, price: 5, weight: 200 },
+    { id_article: "a1", description: "Uno Junior", category: "SOC", age_range: "PE", state: State.N.code, price: 5, weight: 200 },
+    { id_article: "a2", description: "Poupée Léa", category: "FIG", age_range: "PE", state: State.TB.code, price: 7, weight: 350 },
+    { id_article: "a3", description: "Cubes empilables", category: "CON", age_range: "PE", state: State.B.code, price: 4, weight: 300 },
+    { id_article: "a4", description: "Trottinette 3 roues", category: "EXT", age_range: "PE", state: State.N.code, price: 15, weight: 900 },
+    { id_article: "a5", description: "Livre cache-cache", category: "LIV", age_range: "PE", state: State.TB.code, price: 3, weight: 150 },
+    { id_article: "a6", description: "Puzzle animaux", category: "EVL", age_range: "PE", state: State.N.code, price: 6, weight: 250 },
+    { id_article: "a7", description: "Risk Junior", category: "SOC", age_range: "EN", state: State.B.code, price: 9, weight: 500 },
+    { id_article: "a8", description: "Figurine chevalier", category: "FIG", age_range: "EN", state: State.N.code, price: 6, weight: 200 },
+    { id_article: "a9", description: "Lego City", category: "CON", age_range: "EN", state: State.TB.code, price: 20, weight: 700 },
+    { id_article: "a10", description: "Corde à sauter", category: "EXT", age_range: "EN", state: State.N.code, price: 2, weight: 100 },
+    { id_article: "a11", description: "Globe interactif", category: "EVL", age_range: "EN", state: State.B.code, price: 18, weight: 600 },
+    { id_article: "a12", description: "Peluche musicale", category: "EVL", age_range: "BB", state: State.TB.code, price: 8, weight: 250 },
+    { id_article: "a13", description: "Livre tissu jungle", category: "LIV", age_range: "BB", state: State.N.code, price: 4, weight: 100 },
+    { id_article: "a14", description: "Hochet dentition", category: "EVL", age_range: "BB", state: State.B.code, price: 3, weight: 80 },
+    { id_article: "a15", description: "Cube sensoriel", category: "CON", age_range: "BB", state: State.TB.code, price: 5, weight: 200 },
 ];
 
 const users3: UserToChild[] = [
-    { id_user: "Emma", age_range: "PE", preferences: ["SOC","FIG","EVL","CON","LIV","EXT"] },
-    { id_user: "Hugo", age_range: "EN", preferences: ["EXT","CON","EVL","SOC","FIG","LIV"] },
-    { id_user: "Chloé", age_range: "BB", preferences: ["EVL","LIV","CON","FIG","SOC","EXT"] },
-    { id_user: "Léa", age_range: "PE", preferences: ["FIG","EVL","SOC","LIV","CON","EXT"] }
+    { id_user: "Emma", age_range: "PE", preference: ["SOC","FIG","EVL","CON","LIV","EXT"] },
+    { id_user: "Hugo", age_range: "EN", preference: ["EXT","CON","EVL","SOC","FIG","LIV"] },
+    { id_user: "Chloé", age_range: "BB", preference: ["EVL","LIV","CON","FIG","SOC","EXT"] },
+    { id_user: "Léa", age_range: "PE", preference: ["FIG","EVL","SOC","LIV","CON","EXT"] }
 ];
 
 runTest(
@@ -137,22 +137,22 @@ runTest(
 );
 
 const articles4: Article[] = [
-    { id_article: "a1", description: "Uno Junior", category: "SOC", age_range: "PE", state: State.N, price: 5, weight: 200 },
-    { id_article: "a2", description: "Poupée Clara", category: "FIG", age_range: "PE", state: State.TB, price: 7, weight: 350 },
-    { id_article: "a3", description: "Mega Bloks", category: "CON", age_range: "PE", state: State.B, price: 9, weight: 500 },
-    { id_article: "a4", description: "Trottinette", category: "EXT", age_range: "PE", state: State.N, price: 12, weight: 800 },
-    { id_article: "a5", description: "Xylophone", category: "EVL", age_range: "PE", state: State.TB, price: 6, weight: 300 },
-    { id_article: "a6", description: "Mon premier atlas", category: "LIV", age_range: "PE", state: State.N, price: 4, weight: 200 },
-    { id_article: "a7", description: "Cluedo", category: "SOC", age_range: "EN", state: State.B, price: 8, weight: 400 },
-    { id_article: "a8", description: "Figurine Dragon", category: "FIG", age_range: "EN", state: State.N, price: 10, weight: 200 },
-    { id_article: "a9", description: "Meccano", category: "CON", age_range: "EN", state: State.TB, price: 11, weight: 600 },
-    { id_article: "a10", description: "Frisbee", category: "EXT", age_range: "EN", state: State.N, price: 3, weight: 150 },
+    { id_article: "a1", description: "Uno Junior", category: "SOC", age_range: "PE", state: State.N.code, price: 5, weight: 200 },
+    { id_article: "a2", description: "Poupée Clara", category: "FIG", age_range: "PE", state: State.TB.code, price: 7, weight: 350 },
+    { id_article: "a3", description: "Mega Bloks", category: "CON", age_range: "PE", state: State.B.code, price: 9, weight: 500 },
+    { id_article: "a4", description: "Trottinette", category: "EXT", age_range: "PE", state: State.N.code, price: 12, weight: 800 },
+    { id_article: "a5", description: "Xylophone", category: "EVL", age_range: "PE", state: State.TB.code, price: 6, weight: 300 },
+    { id_article: "a6", description: "Mon premier atlas", category: "LIV", age_range: "PE", state: State.N.code, price: 4, weight: 200 },
+    { id_article: "a7", description: "Cluedo", category: "SOC", age_range: "EN", state: State.B.code, price: 8, weight: 400 },
+    { id_article: "a8", description: "Figurine Dragon", category: "FIG", age_range: "EN", state: State.N.code, price: 10, weight: 200 },
+    { id_article: "a9", description: "Meccano", category: "CON", age_range: "EN", state: State.TB.code, price: 11, weight: 600 },
+    { id_article: "a10", description: "Frisbee", category: "EXT", age_range: "EN", state: State.N.code, price: 3, weight: 150 },
 ];
 
 const users4: UserToChild[] = [
-    { id_user: "Léa", age_range: "PE", preferences: ["FIG","SOC","EVL","CON","EXT","LIV"] },
-    { id_user: "Noah", age_range: "EN", preferences: ["CON","EXT","SOC","EVL","FIG","LIV"] },
-    { id_user: "Jade", age_range: "PE", preferences: ["EVL","LIV","FIG","SOC","CON","EXT"] }
+    { id_user: "Léa", age_range: "PE", preference: ["FIG","SOC","EVL","CON","EXT","LIV"] },
+    { id_user: "Noah", age_range: "EN", preference: ["CON","EXT","SOC","EVL","FIG","LIV"] },
+    { id_user: "Jade", age_range: "PE", preference: ["EVL","LIV","FIG","SOC","CON","EXT"] }
 ];
 
 runTest(
