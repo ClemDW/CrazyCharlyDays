@@ -3,7 +3,7 @@ import { Campaign } from "../entities/Campaign";
 import { Usertochild } from "../entities/UserToChild";
 import { State } from "../entities/enums/State";
 
-const INVALID_SCORE = -9999999999999;
+const INVALID_SCORE = -999;
 
 type ScoreResult = {
   score: number;
