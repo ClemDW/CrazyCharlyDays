@@ -12,6 +12,7 @@ import ArticleDetail from "../views/ArticleDetail.vue";
 import ArticleEdit from "../views/ArticleEdit.vue";
 import Profile from "../views/Profile.vue";
 import AdminStats from "../views/AdminStats.vue";
+import AdminCampaignHistory from "../views/AdminCampaignHistory.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,6 +61,11 @@ const router = createRouter({
       path: "/admin/stats",
       name: "admin-stats",
       component: AdminStats,
+    },
+    {
+      path: "/admin/campaigns",
+      name: "admin-campaigns",
+      component: AdminCampaignHistory,
     },
     {
       path: "/catalog",
