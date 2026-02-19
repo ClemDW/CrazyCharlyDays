@@ -1,16 +1,17 @@
-import { UUID } from "node:crypto";
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Double } from "typeorm";
-import { AgeRange } from "./enums/AgeRange";
-
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { AgeRangeKey } from "./enums/AgeRange";
 
 @Entity()
-export class UserToChild extends BaseEntity {
+export class Usertochild extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
-    id_user: UUID;
+    id_user: string;
 
-    @Column()
-    age_range: AgeRange;
+    @Column({
+        type: "varchar",
+        length: 10
+    })
+    age_range: AgeRangeKey;
 
-    @Column("text", { array: true })
-     preferences: string[];
+    @Column("text", { array: true, nullable: true })
+    preference: string[];
 }
