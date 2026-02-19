@@ -1,18 +1,9 @@
+import { BoxWithArticle, CompositionResult } from "./Temp";
 import Score from "./Score";
 import { Campaign } from "../entities/Campaign";
 import { Usertochild } from "../entities/UserToChild";
 import { Article } from "../entities/Article";
-import {Box} from "../entities/Box";
-
-type BoxWithArticle = {
-    box: Box
-    articles: Article[]
-}
-
-type CompositionResult = {
-    boxes: BoxWithArticle[];
-    score: number;
-};
+import * as fs from "fs/promises";
 
 type RecuitOptions = {
     initialTemperature?: number;
