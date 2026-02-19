@@ -1,9 +1,13 @@
-import {Article} from "../entities/Article";
-import {Box} from "../entities/Box";
+// Temp.ts
+import { Article } from "../entities/Article";
+import { Box } from "../entities/Box";
 
-type BoxWithArticle = {
-    box: Box
-    articles: Article[]
+export type BoxWithArticle = {
+    box: Box;
+    articles: Article[];
 }
 
-export { BoxWithArticle}
+export type CompositionResult = {
+    boxes: BoxWithArticle[],
+    score: number
+}
