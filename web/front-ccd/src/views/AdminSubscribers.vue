@@ -1,5 +1,25 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
+
+const API_URL = "http://localhost:3000";
+
+// --- Label maps ---
+const AGE_LABELS: Record<string, string> = {
+  BB: "0-3 ans (bébé)",
+  PE: "3-6 ans (petit enfant)",
+  EN: "6-10 ans (enfant)",
+  AD: "10+ ans (adolescent)",
+};
+
+const CAT_LABELS: Record<string, string> = {
+  SOC: "Jeux de société",
+  FIG: "Figurines et poupées",
+  CON: "Jeux de construction",
+  EXT: "Jeux d'extérieur",
+  EVL: "Jeux d'éveil et éducatifs",
+  LIV: "Livres jeunesse",
+};
 
 interface Category {
   code: string;
@@ -19,97 +39,59 @@ interface Subscriber {
   children: Child[];
 }
 
-// --- Mock data ---
-const subscribers = reactive<Subscriber[]>([
-  {
-    lastName: "Dupont",
-    firstName: "Marie",
-    email: "marie@test.com",
-    children: [
-      {
-        ageRange: "PE",
-        ageLabel: "3-6 ans (petit enfant)",
-        categories: [
-          { code: "SOC", label: "Jeux de société" },
-          { code: "CON", label: "Jeux de construction" },
-          { code: "LIV", label: "Livres jeunesse" },
-          { code: "EVL", label: "Jeux d'éveil et éducatifs" },
-          { code: "FIG", label: "Figurines et poupées" },
-          { code: "EXT", label: "Jeux d'extérieur" },
-        ],
-      },
-    ],
-  },
-  {
-    lastName: "Martin",
-    firstName: "Jean",
-    email: "jean@test.com",
-    children: [
-      {
-        ageRange: "EN",
-        ageLabel: "6-10 ans (enfant)",
-        categories: [
-          { code: "CON", label: "Jeux de construction" },
-          { code: "SOC", label: "Jeux de société" },
-          { code: "EXT", label: "Jeux d'extérieur" },
-          { code: "LIV", label: "Livres jeunesse" },
-          { code: "FIG", label: "Figurines et poupées" },
-          { code: "EVL", label: "Jeux d'éveil et éducatifs" },
-        ],
-      },
-      {
-        ageRange: "BB",
-        ageLabel: "0-3 ans (bébé)",
-        categories: [
-          { code: "EVL", label: "Jeux d'éveil et éducatifs" },
-          { code: "FIG", label: "Figurines et poupées" },
-          { code: "LIV", label: "Livres jeunesse" },
-          { code: "CON", label: "Jeux de construction" },
-          { code: "SOC", label: "Jeux de société" },
-          { code: "EXT", label: "Jeux d'extérieur" },
-        ],
-      },
-    ],
-  },
-  {
-    lastName: "Leroy",
-    firstName: "Sophie",
-    email: "sophie@test.com",
-    children: [
-      {
-        ageRange: "BB",
-        ageLabel: "0-3 ans (bébé)",
-        categories: [
-          { code: "FIG", label: "Figurines et poupées" },
-          { code: "EVL", label: "Jeux d'éveil et éducatifs" },
-          { code: "CON", label: "Jeux de construction" },
-          { code: "LIV", label: "Livres jeunesse" },
-          { code: "SOC", label: "Jeux de société" },
-          { code: "EXT", label: "Jeux d'extérieur" },
-        ],
-      },
-    ],
-  },
-  {
-    lastName: "Bernard",
-    firstName: "Lucas",
-    email: "lucas@test.com",
-    children: [
-      {
-        ageRange: "AD",
-        ageLabel: "10+ ans (adolescent)",
-        categories: [
-          { code: "SOC", label: "Jeux de société" },
-          { code: "LIV", label: "Livres jeunesse" },
-          { code: "CON", label: "Jeux de construction" },
-          { code: "EXT", label: "Jeux d'extérieur" },
-          { code: "EVL", label: "Jeux d'éveil et éducatifs" },
-          { code: "FIG", label: "Figurines et poupées" },
-        ],
-      },
-    ],
-  },
-]);
+const subscribers = ref<Subscriber[]>([]);
+const loading = ref(true);
+const errorMessage = ref("");
+
+onMounted(async () => {
+  try {
+    // 1. Fetch all users
+    const usersRes = await axios.get(`${API_URL}/users`);
+    const allUsers: any[] = usersRes.data;
+
+    // 2. For each USER-role user, fetch their children data
+    const subs: Subscriber[] = [];
+
+    for (const user of allUsers.filter((u: any) => u.role === "USER")) {
+      // Fetch all usertochild entries for this user
+      let childrenData: any[] = [];
+      try {
+        const childRes = await axios.get(
+          `${API_URL}/usertochild/${user.id_user}`,
+        );
+        // The endpoint may return one object or an array
+        const data = childRes.data;
+        childrenData = Array.isArray(data) ? data : [data];
+      } catch {
+        // No children found — skip
+        childrenData = [];
+      }
+
+      const children: Child[] = childrenData.map((c: any) => ({
+        ageRange: c.age_range,
+        ageLabel: AGE_LABELS[c.age_range] || c.age_range,
+        categories: (c.preference || []).map((code: string) => ({
+          code,
+          label: CAT_LABELS[code] || code,
+        })),
+      }));
+
+      subs.push({
+        lastName: user.family_name,
+        firstName: user.name,
+        email: user.email,
+        children,
+      });
+    }
+
+    subscribers.value = subs;
+  } catch (err: any) {
+    console.error("Erreur :", err);
+    errorMessage.value = "Impossible de charger la liste des abonnés.";
+  } finally {
+    loading.value = false;
+  }
+});
 
 function ageBadgeClass(code: string): string {
   const map: Record<string, string> = {
@@ -131,7 +113,12 @@ function ageBadgeClass(code: string): string {
       total
     </p>
 
-    <div class="table-wrapper">
+    <p v-if="loading" style="text-align: center; color: #888; padding: 2rem">
+      Chargement des abonnés…
+    </p>
+    <p v-else-if="errorMessage" class="msg error">{{ errorMessage }}</p>
+
+    <div v-else class="table-wrapper">
       <table class="subs-table">
         <thead>
           <tr>
