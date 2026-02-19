@@ -25,4 +25,10 @@ export class Campaign extends BaseEntity {
 
     @Column()
     validated: boolean;
+
+    @Column()
+    min_price: number;
+
+    @Column()
+    max_price: number;
 }
