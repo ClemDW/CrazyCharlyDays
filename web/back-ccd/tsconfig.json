@@ -12,7 +12,6 @@
     "lib": ["esnext", "dom"],
     "strictPropertyInitialization": false
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/optimisation/**"]
 }
