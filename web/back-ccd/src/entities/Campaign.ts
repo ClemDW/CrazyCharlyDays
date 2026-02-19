@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
-import { StateCampaignKey } from "./enums/StateCampaign"; // Importe le type Key
+import { StateCampaignKey } from "./enums/StateCampaign";
 
 @Entity()
 export class Campaign extends BaseEntity {
@@ -17,16 +17,13 @@ export class Campaign extends BaseEntity {
         length: 20,
         default: "IN_PROGRESS"
     })
-    status: StateCampaignKey; // Utilise la clé technique
+    status: StateCampaignKey;
 
     @Column("float", { default: 0 })
     total_weight: number;
 
     @Column("float", { default: 0 })
     total_price: number;
-
-    @Column({ default: false })
-    validated: boolean;
 
     @Column("float")
     min_price: number;

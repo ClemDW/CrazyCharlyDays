@@ -17,6 +17,7 @@ export class Article extends BaseEntity {
 
     @Column({ type: "varchar" })
     age_range: AgeRangeKey;
+
     @Column({ type: "varchar" })
     state: StateKey;
 
@@ -25,4 +26,7 @@ export class Article extends BaseEntity {
 
     @Column("float")
     weight: number;
+
+    @Column("uuid", { nullable: true })
+    id_box: string;
 }
