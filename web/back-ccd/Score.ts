@@ -11,9 +11,10 @@ export default class Score {
 
     evaluateComposition(boxes : Array<BoxWithArticle>, campaign: Campaign, usersToChild: Array<UserToChild>) : ScoreResult {
         let totalScore = 0;
+        let perBoxScore = new Map<string, number>();
 
         for (const box of boxes) {
-            let userToChild = usersToChild.find(utc => utc.id_user === box.id_user);
+            let userToChild = usersToChild.find(utc => utc.id_user === box.box.id_user);
             if (userToChild) {
                 let score = this.evaluateBox(box, campaign, userToChild);
                 if (score === INVALID_SCORE) {
@@ -22,13 +23,23 @@ export default class Score {
                         perBoxScore: new Map<string, number>()
                     }
                 }
+                perBoxScore.set(box.box.id_box, score);
                 totalScore += score;
+            }
+
+            // Règle 8 : Equité
+            for (const box2 of boxes) {
+                if (box.box.id_box !== box2.box.id_box) {
+                    if (box2.articles.length - box.articles.length > 2) {
+                        totalScore -= 10;
+                    }
+                }
             }
         }
 
         return {
             score: totalScore,
-            perBoxScore: new Map<string, number>()
+            perBoxScore: perBoxScore
         }
     }
 
