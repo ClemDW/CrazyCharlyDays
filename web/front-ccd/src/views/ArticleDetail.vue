@@ -73,10 +73,6 @@ export default {
           <span class="label">Poids</span>
           <span class="value">{{ article.weight }} kg</span>
         </div>
-        <div v-if="article.code_barre" class="info-item">
-          <span class="label">Code-barre</span>
-          <span class="value code">{{ article.code_barre }}</span>
-        </div>
       </div>
 
       <div class="actions">

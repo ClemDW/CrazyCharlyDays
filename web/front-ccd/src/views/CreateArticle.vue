@@ -8,7 +8,6 @@ const ageRange = ref("BB");
 const state = ref("N");
 const price = ref<number | null>(null);
 const weight = ref<number | null>(null);
-const code_barre = ref("");
 const photoPreview = ref<string | null>(null);
 
 const errorMessage = ref("");
@@ -58,7 +57,6 @@ async function handleSubmit() {
     state: state.value,
     price: price.value,
     weight: weight.value,
-    code_barre: code_barre.value.trim() || undefined,
     picture: photoPreview.value || undefined,
   };
 
@@ -75,7 +73,6 @@ async function handleSubmit() {
     description.value = "";
     price.value = null;
     weight.value = null;
-    code_barre.value = "";
     photoPreview.value = null;
     const fileInput = document.getElementById("photo") as HTMLInputElement;
     if (fileInput) fileInput.value = "";
@@ -168,20 +165,6 @@ async function handleSubmit() {
             <span class="unit">g</span>
           </div>
         </div>
-      </div>
-
-      <!-- Barcode / QR Code -->
-      <div class="form-group">
-        <label for="code_barre">Code-barre / QR Code (Optionnel)</label>
-        <input
-          id="code_barre"
-          v-model="code_barre"
-          type="text"
-          placeholder="Scannez ou saisissez un code..."
-        />
-        <p class="help-text">
-          Utilisez ce champ pour associer un identifiant physique à l'article.
-        </p>
       </div>
 
       <!-- Photo upload -->
