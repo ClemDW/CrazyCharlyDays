@@ -1,5 +1,8 @@
-import { BoxWithArticle, Campaign, UserToChild, Article } from "./Temp";
+import { BoxWithArticle } from "./Temp";
 import Score from "./Score";
+import {Campaign} from "../entities/Campaign";
+import {UserToChild} from "../entities/UserToChild";
+import {Article} from "../entities/Article";
 
 type CompositionResult = {
     boxes: BoxWithArticle[],
