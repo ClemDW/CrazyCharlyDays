@@ -1,5 +1,7 @@
 FROM node:22-alpine
 
+RUN apk add --no-cache npm
+
 WORKDIR /app
 
 # Copier les fichiers de dépendances
