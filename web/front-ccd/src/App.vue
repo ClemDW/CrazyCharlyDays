@@ -19,11 +19,8 @@ import { RouterLink, RouterView } from "vue-router";
     <div class="nav-links">
       <RouterLink to="/">Accueil</RouterLink>
       <RouterLink to="/auth">Inscription</RouterLink>
-      <RouterLink to="/create-article">Créer un article</RouterLink>
-      <RouterLink to="/admin/campaign">Campagne</RouterLink>
-      <RouterLink to="/admin/boxes">Box composées</RouterLink>
-      <RouterLink to="/admin/subscribers">Abonnés</RouterLink>
       <RouterLink to="/my-box">Ma Box</RouterLink>
+      <RouterLink to="/admin" class="nav-dashboard">Dashboard</RouterLink>
     </div>
   </nav>
 
@@ -122,6 +119,17 @@ body {
   background: #eef2ff;
   color: #4f6cff;
   font-weight: 600;
+}
+
+.nav-dashboard {
+  background: #1a1a2e !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  border-radius: 6px;
+}
+
+.nav-dashboard:hover {
+  background: #2d2d4a !important;
 }
 
 /* Burger (hidden on desktop) */

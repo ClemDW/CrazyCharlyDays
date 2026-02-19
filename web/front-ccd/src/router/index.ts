@@ -6,6 +6,7 @@ import CampaignConfig from "../views/CampaignConfig.vue";
 import MyBox from "../views/MyBox.vue";
 import AdminBoxes from "../views/AdminBoxes.vue";
 import AdminSubscribers from "../views/AdminSubscribers.vue";
+import AdminDashboard from "../views/AdminDashboard.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,11 @@ const router = createRouter({
       path: "/admin/subscribers",
       name: "admin-subscribers",
       component: AdminSubscribers,
+    },
+    {
+      path: "/admin",
+      name: "admin-dashboard",
+      component: AdminDashboard,
     },
   ],
 });
