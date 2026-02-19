@@ -7,7 +7,8 @@ import MyBox from "../views/MyBox.vue";
 import AdminBoxes from "../views/AdminBoxes.vue";
 import AdminSubscribers from "../views/AdminSubscribers.vue";
 import AdminDashboard from "../views/AdminDashboard.vue";
-import Catalog from '../views/Catalog.vue';
+import Catalog from "../views/Catalog.vue";
+import ArticleDetail from "../views/ArticleDetail.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,10 +54,16 @@ const router = createRouter({
       component: AdminDashboard,
     },
     {
-      path: '/catalog',
-      name: 'catalog',
+      path: "/catalog",
+      name: "catalog",
       component: Catalog,
-    }
+    },
+    {
+      path: "/catalog/:id",
+      name: "article-detail",
+      component: ArticleDetail,
+      props: true,
+    },
   ],
 });
 
