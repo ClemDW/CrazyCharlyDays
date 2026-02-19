@@ -76,12 +76,32 @@ saveCSV(csvString, "/chemin/vers/resultat.csv");
 
 ---
 
-## 🚀 Déploiement (A COMPLETER)
+# Déploiement 
+## Fonctionallité clé : Déploiement on-push sur docketu
 
-Le déploiement de l'application suit une méthodologie d'intégration continue :
+Le serveur **Docketu** est hébergé sur le réseau interne de l'université
+et *n'est pas accessible depuis Internet*. Les runners cloud de GitHub
+Actions ne peuvent donc tout simplement pas l'atteindre. Pour contourner
+cette contrainte, nous avons mis en place un **self-hosted runner** :
+une machine personnelle connectée au réseau WiFi universitaire
+**eduroam**, qui agit comme relais entre GitHub et Docketu.
 
-1. **Environnement local** : Utilisation de Docker pour harmoniser les instances PostgreSQL entre les développeurs.
-2. **Validation** : Scripts de migration pour assurer la cohérence du schéma de base de données.
-3. **Hébergement** : [Détaillez ici si vous utilisez Heroku, Vercel, un VPS, etc.]
+Ce choix présente plusieurs avantages concrets. D'abord, il permet un
+**déploiement entièrement automatique** : un simple `git push` sur la
+branche `main` suffit à mettre à jour l'application en production, sans
+aucune intervention manuelle sur le serveur. Cela élimine les erreurs
+humaines et garantit que le code déployé correspond toujours à l'état du
+dépôt.
 
----
+Ensuite, la sécurité est assurée par un système de **clés SSH ed25519**
+à deux niveaux : une première paire permet au runner de se connecter à
+Docketu (clé privée stockée chiffrée dans les **GitHub Secrets**), et
+une seconde permet à Docketu de récupérer le code depuis GitHub via
+`git clone` / `git pull`. Aucun mot de passe ne transite, et les clés
+privées ne sont jamais exposées dans le code.
+
+Enfin, cette architecture est **reproductible et transparente** : toute
+la logique de déploiement est décrite dans un unique fichier
+`deploy.yml` versionné dans le dépôt. N'importe quel membre de l'équipe
+peut comprendre, auditer ou modifier le pipeline sans documentation
+externe.
