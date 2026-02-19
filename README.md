@@ -17,7 +17,7 @@ Ce dépôt contient l'application développée par l'équipe **Jus de Raison** d
 ## 🔗 Liens utiles
 
 * **Dépôt Git :** [https://github.com/ClemDW/CrazyCharlyDays](https://github.com/ClemDW/CrazyCharlyDays)
-* **Application finale :** *En attente de déploiement*
+* **Application finale :** http://docketu.iutnc.univ-lorraine.fr:15341/
 
 ---
 
@@ -70,6 +70,11 @@ Nous avons adopté une structure modulaire pour faciliter la maintenance et l'é
 * **PostgreSQL** : Nous avons choisi ce système de gestion de base de données relationnelle car il offre une gestion native et performante des types complexes (comme les tableaux et les enums).
 * **TypeORM (Active Record)** : L'utilisation de cet ORM permet une manipulation fluide des données sous forme d'objets, simplifiant les opérations de création et de récupération tout en protégeant l'application contre les injections SQL.
 * **REST API** : La communication est centralisée dans un serveur Express (`server.ts`), offrant une interface claire et documentée pour le frontend.
+
+### Choix D'algorithme d'optimisation
+* Nous avons développé l'algo glouton et l'algo recuit simulé lors de cet événement. Nous avons pu nous apercevoir que l'agorithme recuit simulé est plus performant (des scores plus haut pour les boxes). Nous avons donc choisis d'utiliser l'algorithme __recuit simulé__ pour résoudre le problème d'optimisation de la répartition des articles dans les box. Cet algorithme trouve des meilleurs résultats que l'algo glouton car c'est une amélioration de l'algo glouton qui permet de ne pas rester bloqué dans des minimums locaux.
+
+
 
 ### Exemple d'utilisation pour tester la méthode d'optimisation sur un jeu de données
 
