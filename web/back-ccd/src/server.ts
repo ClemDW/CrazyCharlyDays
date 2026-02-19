@@ -81,6 +81,7 @@ app.delete("/usertochild/:id", UserToChildController.deleteByUser);
 
 app.post("/box", BoxController.create);
 app.get("/box", BoxController.getAll);
+app.get("/box/detailed", BoxController.getDetailed);
 app.get("/box/:id", BoxController.getOne);
 app.put("/box/:id", BoxController.update);
 

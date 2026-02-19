@@ -235,15 +235,34 @@ function downloadCSV() {
         :key="idx"
         class="result-box"
       >
-        <h3>
-          📦 {{ box.userName }}
-          <span class="box-user-id">({{ box.id_user.slice(0, 8) }}…)</span>
-        </h3>
+        <div class="box-header">
+          <h3>
+            📦 {{ box.userName }}
+            <span class="box-user-id">({{ box.id_user.slice(0, 8) }}…)</span>
+          </h3>
+          <div class="box-metrics">
+            <span class="metric-badge score">⭐ {{ box.score }}</span>
+            <span
+              class="metric-badge weight"
+              :class="{
+                warning:
+                  (maxWeight || 0) > 0 &&
+                  box.total_weight > (maxWeight || 0) * 0.9,
+              }"
+            >
+              ⚖️ {{ box.total_weight }} / {{ maxWeight || 0 }}g
+            </span>
+            <span class="metric-badge price">💰 {{ box.total_price }}€</span>
+          </div>
+        </div>
         <ul>
           <li v-for="art in box.articles" :key="art.id">
             <span class="art-cat">{{ art.category }}</span>
             <span class="art-age">{{ art.age_range }}</span>
             <span class="art-state">{{ art.state }}</span>
+            <span class="art-details"
+              >{{ art.weight }}g | {{ art.price }}€</span
+            >
           </li>
         </ul>
         <p v-if="box.articles.length === 0" class="empty-box">
@@ -412,7 +431,55 @@ h1 {
 
 .result-box h3 {
   font-size: 0.95rem;
-  margin: 0 0 0.5rem;
+  margin: 0;
+}
+
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.box-metrics {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.metric-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.metric-badge.score {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+.metric-badge.weight {
+  background: #e1f5fe;
+  color: #0277bd;
+}
+.metric-badge.weight.warning {
+  background: #fffde7;
+  color: #fbc02d;
+  border: 1px solid #fbc02d;
+}
+.metric-badge.price {
+  background: #f1f8e9;
+  color: #33691e;
+}
+
+.art-details {
+  font-size: 0.75rem;
+  color: #666;
+  margin-left: auto;
 }
 
 .box-user-id {

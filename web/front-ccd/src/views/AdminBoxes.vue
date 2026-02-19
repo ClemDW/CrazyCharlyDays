@@ -1,202 +1,69 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 
 interface Article {
+  id: string;
   description: string;
   category: string;
-  ageRange: string;
+  age_range: string;
   state: string;
   weight: number;
   price: number;
 }
 
 interface Box {
-  id: number;
+  id_user: string;
   subscriberEmail: string;
   subscriberName: string;
-  childAge: string;
   score: number;
+  total_weight: number;
+  total_price: number;
   articles: Article[];
   validated: boolean;
 }
 
-// --- Mock data ---
-const boxes = reactive<Box[]>([
-  {
-    id: 1,
-    subscriberEmail: "marie@test.com",
-    subscriberName: "Marie Dupont",
-    childAge: "PE — 3-6 ans",
-    score: 87,
-    validated: true,
-    articles: [
-      {
-        description: "Puzzle en bois 24 pièces",
-        category: "Jeux d'éveil et éducatifs",
-        ageRange: "PE",
-        state: "Très bon état",
-        weight: 350,
-        price: 4.5,
-      },
-      {
-        description: "Figurine dinosaure T-Rex",
-        category: "Figurines et poupées",
-        ageRange: "PE",
-        state: "Bon état",
-        weight: 200,
-        price: 3.0,
-      },
-      {
-        description: "Livre « Le petit prince »",
-        category: "Livres jeunesse",
-        ageRange: "PE",
-        state: "Neuf",
-        weight: 300,
-        price: 5.0,
-      },
-      {
-        description: "Jeu de construction 50 pièces",
-        category: "Jeux de construction",
-        ageRange: "PE",
-        state: "Très bon état",
-        weight: 600,
-        price: 7.0,
-      },
-      {
-        description: "Jeu de cartes « 7 familles »",
-        category: "Jeux de société",
-        ageRange: "PE",
-        state: "Neuf",
-        weight: 150,
-        price: 2.5,
-      },
-      {
-        description: "Ballon en mousse",
-        category: "Jeux d'extérieur",
-        ageRange: "PE",
-        state: "Bon état",
-        weight: 250,
-        price: 2.5,
-      },
-    ],
-  },
-  {
-    id: 2,
-    subscriberEmail: "jean@test.com",
-    subscriberName: "Jean Martin",
-    childAge: "EN — 6-10 ans",
-    score: 72,
-    validated: false,
-    articles: [
-      {
-        description: "Monopoly Junior",
-        category: "Jeux de société",
-        ageRange: "EN",
-        state: "Bon état",
-        weight: 800,
-        price: 8.0,
-      },
-      {
-        description: "Robot à assembler",
-        category: "Jeux de construction",
-        ageRange: "EN",
-        state: "Neuf",
-        weight: 450,
-        price: 12.0,
-      },
-      {
-        description: "BD Astérix tome 5",
-        category: "Livres jeunesse",
-        ageRange: "EN",
-        state: "Très bon état",
-        weight: 280,
-        price: 4.0,
-      },
-      {
-        description: "Corde à sauter",
-        category: "Jeux d'extérieur",
-        ageRange: "EN",
-        state: "Neuf",
-        weight: 120,
-        price: 2.0,
-      },
-    ],
-  },
-  {
-    id: 3,
-    subscriberEmail: "sophie@test.com",
-    subscriberName: "Sophie Leroy",
-    childAge: "BB — 0-3 ans",
-    score: 93,
-    validated: true,
-    articles: [
-      {
-        description: "Hochet en bois",
-        category: "Jeux d'éveil et éducatifs",
-        ageRange: "BB",
-        state: "Neuf",
-        weight: 100,
-        price: 3.0,
-      },
-      {
-        description: "Peluche lapin",
-        category: "Figurines et poupées",
-        ageRange: "BB",
-        state: "Très bon état",
-        weight: 200,
-        price: 5.0,
-      },
-      {
-        description: "Cubes empilables",
-        category: "Jeux de construction",
-        ageRange: "BB",
-        state: "Neuf",
-        weight: 400,
-        price: 6.0,
-      },
-      {
-        description: "Imagier animaux",
-        category: "Livres jeunesse",
-        ageRange: "BB",
-        state: "Neuf",
-        weight: 250,
-        price: 4.5,
-      },
-      {
-        description: "Tapis d'éveil pliant",
-        category: "Jeux d'éveil et éducatifs",
-        ageRange: "BB",
-        state: "Bon état",
-        weight: 500,
-        price: 8.0,
-      },
-    ],
-  },
-]);
+const API_URL = "http://localhost:3000";
+const boxes = ref<Box[]>([]);
+const loading = ref(true);
+const error = ref("");
+const globalScore = ref(0);
 
-// Computed helpers
-function totalWeight(box: Box): number {
-  return box.articles.reduce((sum, a) => sum + a.weight, 0);
+async function fetchBoxes() {
+  loading.value = true;
+  error.value = "";
+  try {
+    const response = await axios.get(`${API_URL}/box/detailed`);
+    const data = response.data.jsonObject;
+    boxes.value = data.boxes;
+    globalScore.value = data.score;
+  } catch (err: any) {
+    console.error("Erreur lors du chargement des boxes:", err);
+    error.value =
+      "Impossible de charger les boxes. Assurez-vous que le backend est démarré.";
+  } finally {
+    loading.value = false;
+  }
 }
 
-function totalPrice(box: Box): number {
-  return box.articles.reduce((sum, a) => sum + a.price, 0);
-}
+onMounted(() => {
+  fetchBoxes();
+});
 
 function scoreClass(score: number): string {
-  if (score >= 85) return "score-high";
-  if (score >= 60) return "score-mid";
+  if (score >= 40) return "score-high";
+  if (score >= 20) return "score-mid";
   return "score-low";
 }
 
 // Expanded toggle
-const expandedIds = ref<Set<number>>(new Set());
+const expandedIds = ref<Set<string>>(new Set());
 
-function toggleExpand(id: number) {
-  if (expandedIds.value.has(id)) {
-    expandedIds.value.delete(id);
+function toggleExpand(id_user: string) {
+  if (expandedIds.value.has(id_user)) {
+    expandedIds.value.delete(id_user);
   } else {
-    expandedIds.value.add(id);
+    expandedIds.value.add(id_user);
   }
 }
 </script>
@@ -208,28 +75,38 @@ function toggleExpand(id: number) {
       Visualisation de toutes les box proposées par l'optimisation.
     </p>
 
-    <p class="summary">
-      {{ boxes.length }} box au total ·
-      {{ boxes.filter((b) => b.validated).length }} validées ·
-      {{ boxes.filter((b) => !b.validated).length }} en attente
+    <!-- Loading / Error -->
+    <div v-if="loading" class="loading-state">
+      <span class="spinner">⏳</span> Optimisation en cours...
+    </div>
+
+    <div v-if="error" class="msg error">
+      {{ error }}
+      <button @click="fetchBoxes" class="retry-btn">Réessayer</button>
+    </div>
+
+    <!-- Summary -->
+    <p v-if="!loading && !error" class="summary">
+      {{ boxes.length }} box proposées · Score global :
+      <strong>{{ globalScore }}</strong>
     </p>
 
-    <div v-for="box in boxes" :key="box.id" class="box-card">
+    <div v-for="(box, idx) in boxes" :key="box.id_user" class="box-card">
       <!-- Header row -->
-      <div class="box-header" @click="toggleExpand(box.id)">
+      <div class="box-header" @click="toggleExpand(box.id_user)">
         <div class="box-title">
           <span class="expand-icon">{{
-            expandedIds.has(box.id) ? "▾" : "▸"
+            expandedIds.has(box.id_user) ? "▾" : "▸"
           }}</span>
-          <h2>📦 Box #{{ box.id }}</h2>
+          <h2>📦 Box #{{ idx + 1 }}</h2>
           <span
             :class="['badge', box.validated ? 'badge-ok' : 'badge-pending']"
           >
-            {{ box.validated ? "✅ Validée" : "⏳ En attente" }}
+            {{ box.validated ? "✅ Validée" : "⏳ Proposée" }}
           </span>
         </div>
         <div :class="['score', scoreClass(box.score)]">
-          {{ box.score }}<small>/100</small>
+          {{ box.score }}
         </div>
       </div>
 
@@ -240,13 +117,12 @@ function toggleExpand(id: number) {
             box.subscriberEmail
           }})</span
         >
-        <span>Âge : {{ box.childAge }}</span>
-        <span>Poids : {{ totalWeight(box) }} g</span>
-        <span>Prix : {{ totalPrice(box).toFixed(2) }} €</span>
+        <span>Poids : {{ box.total_weight }} g</span>
+        <span>Prix : {{ (box.total_price || 0).toFixed(2) }} €</span>
       </div>
 
       <!-- Expanded articles table -->
-      <div v-if="expandedIds.has(box.id)" class="box-details">
+      <div v-if="expandedIds.has(box.id_user)" class="box-details">
         <table class="articles-table">
           <thead>
             <tr>
@@ -259,25 +135,30 @@ function toggleExpand(id: number) {
               <th>Prix</th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="(article, idx) in box.articles" :key="idx">
-              <td class="cell-num">{{ idx + 1 }}</td>
+          <tbody v-if="box.articles.length > 0">
+            <tr v-for="(article, aIdx) in box.articles" :key="article.id">
+              <td class="cell-num">{{ aIdx + 1 }}</td>
               <td>{{ article.description }}</td>
               <td>{{ article.category }}</td>
-              <td>{{ article.ageRange }}</td>
+              <td>{{ article.age_range }}</td>
               <td>{{ article.state }}</td>
               <td class="cell-num">{{ article.weight }} g</td>
-              <td class="cell-num">{{ article.price.toFixed(2) }} €</td>
+              <td class="cell-num">{{ (article.price || 0).toFixed(2) }} €</td>
             </tr>
           </tbody>
-          <tfoot>
+          <tbody v-else>
+            <tr>
+              <td colspan="7" class="empty-row">Aucun article assigné</td>
+            </tr>
+          </tbody>
+          <tfoot v-if="box.articles.length > 0">
             <tr>
               <td colspan="5"><strong>Total</strong></td>
               <td class="cell-num">
-                <strong>{{ totalWeight(box) }} g</strong>
+                <strong>{{ box.total_weight }} g</strong>
               </td>
               <td class="cell-num">
-                <strong>{{ totalPrice(box).toFixed(2) }} €</strong>
+                <strong>{{ (box.total_price || 0).toFixed(2) }} €</strong>
               </td>
             </tr>
           </tfoot>
@@ -447,6 +328,46 @@ h1 {
 .cell-num {
   text-align: right;
   white-space: nowrap;
+}
+
+/* Loading / Error */
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.spinner {
+  display: inline-block;
+  animation: rotate 2s linear infinite;
+  font-size: 1.5rem;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.retry-btn {
+  margin-left: 1rem;
+  padding: 0.3rem 0.8rem;
+  background: #c62828;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.empty-row {
+  text-align: center;
+  padding: 2rem !important;
+  color: #999;
+  font-style: italic;
 }
 
 /* Responsive */
