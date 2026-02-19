@@ -22,6 +22,7 @@ import { RouterLink, RouterView } from "vue-router";
       <RouterLink to="/create-article">Créer un article</RouterLink>
       <RouterLink to="/admin/campaign">Campagne</RouterLink>
       <RouterLink to="/admin/boxes">Box composées</RouterLink>
+      <RouterLink to="/admin/subscribers">Abonnés</RouterLink>
       <RouterLink to="/my-box">Ma Box</RouterLink>
     </div>
   </nav>

@@ -5,6 +5,7 @@ import AuthView from "../views/AuthView.vue";
 import CampaignConfig from "../views/CampaignConfig.vue";
 import MyBox from "../views/MyBox.vue";
 import AdminBoxes from "../views/AdminBoxes.vue";
+import AdminSubscribers from "../views/AdminSubscribers.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: "/admin/boxes",
       name: "admin-boxes",
       component: AdminBoxes,
+    },
+    {
+      path: "/admin/subscribers",
+      name: "admin-subscribers",
+      component: AdminSubscribers,
     },
   ],
 });
