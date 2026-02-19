@@ -4,7 +4,7 @@ import cors from "cors";
 import { DataSource } from "typeorm";
 import { Article } from "./entities/Article";
 import { User } from "./entities/User";
-import { UserToChild } from "./entities/UserToChild";
+import { Usertochild } from "./entities/UserToChild";
 import { Box } from "./entities/Box";
 import { Campaign } from "./entities/Campaign";
 
@@ -15,7 +15,7 @@ const AppDataSource = new DataSource({
   type: "postgres",
   url: process.env.DATABASE_URL,
   synchronize: false,
-  entities: [Article, User, UserToChild, Box, Campaign],
+  entities: [Article, User, Usertochild, Box, Campaign],
 });
 
 const app = express();
@@ -153,7 +153,7 @@ app.put("/articles/:id", async (req: Request, res: Response) => {
 app.post("/subscribers", async (req: Request, res: Response) => {
   try {
     const userRepo = AppDataSource.getRepository(User);
-    const childRepo = AppDataSource.getRepository(UserToChild);
+    const childRepo = AppDataSource.getRepository(Usertochild);
 
     const { name, family_name, email, children } = req.body;
 
@@ -166,7 +166,7 @@ app.post("/subscribers", async (req: Request, res: Response) => {
     });
     const savedUser = await userRepo.save(user);
 
-    // Créer les liens UserToChild
+    // Créer les liens Usertochild
     if (Array.isArray(children)) {
       for (const child of children) {
         const utc = childRepo.create({
@@ -190,7 +190,7 @@ app.post("/subscribers", async (req: Request, res: Response) => {
 app.get("/subscribers", async (req: Request, res: Response) => {
   try {
     const userRepo = AppDataSource.getRepository(User);
-    const childRepo = AppDataSource.getRepository(UserToChild);
+    const childRepo = AppDataSource.getRepository(Usertochild);
 
     const users = await userRepo.find({ where: { role: "user" as any } });
 
@@ -216,7 +216,7 @@ app.get("/subscribers", async (req: Request, res: Response) => {
 app.get("/subscribers/:email", async (req: Request, res: Response) => {
   try {
     const userRepo = AppDataSource.getRepository(User);
-    const childRepo = AppDataSource.getRepository(UserToChild);
+    const childRepo = AppDataSource.getRepository(Usertochild);
 
     const user = await userRepo.findOneBy({
       email: req.params.email as string,
@@ -237,7 +237,7 @@ app.get("/subscribers/:email", async (req: Request, res: Response) => {
 // PUT /subscribers/:id_user — Modifier les préférences
 app.put("/subscribers/:id_user", async (req: Request, res: Response) => {
   try {
-    const childRepo = AppDataSource.getRepository(UserToChild);
+    const childRepo = AppDataSource.getRepository(Usertochild);
     const children = await childRepo.find({
       where: { id_user: req.params.id_user as any },
     });
