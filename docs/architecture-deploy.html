@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Déploiement CI/CD — Jus de raison</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --orange: #d29922;
+      --purple: #bc8cff;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+    .diagram-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .diagram-section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1.2rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+    .mermaid svg { max-width: 100%; height: auto; }
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .legend-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+    }
+    .legend-card h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .legend-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-ssh { background: #1f6feb33; color: var(--accent); }
+    .badge-git { background: #3fb95033; color: var(--green); }
+    .badge-net { background: #d2992233; color: var(--orange); }
+    code {
+      background: #30363d;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Déploiement CI/CD — Jus de raison</h1>
+    <p class="subtitle">Déploiement automatique sur Docketu via GitHub Actions self-hosted runner</p>
+
+    <!-- DIAGRAMME 1 : Flux global du déploiement    -->
+    <div class="diagram-section">
+      <h2>Flux complet du déploiement</h2>
+      <pre class="mermaid">
+%%{init: {'theme':'dark', 'themeVariables': {'fontSize':'14px'}}}%%
+flowchart LR
+    subgraph INTERNET["Internet"]
+        GH["<b>GitHub</b><br/>ClemDW/CrazyCharlyDays<br/><i>main branch</i>"]
+    end
+
+    subgraph EDUROAM["Réseau UL eduroam"]
+        RUNNER["<b>Self-Hosted Runner</b><br/>Machine personnelle<br/><i>GitHub Actions Runner</i>"]
+        subgraph DOCKETU["Serveur Docketu"]
+            USER["<b>User SSH</b><br/><code>denis154u</code>"]
+            REPO["<b>Dépôt cloné</b><br/>/users/home/denis154u/ccd"]
+            DOCKER["<b>Docker Compose</b><br/>frontend · backend<br/>db · lb · adminer"]
+            USER --> REPO
+            REPO --> DOCKER
+        end
+    end
+
+    GH -- "1 push sur main<br/>déclenche le workflow" --> RUNNER
+    RUNNER -- "2 SSH (clé ed25519)<br/>secrets.DOCKETU_SSH_PRIVATE_KEY" --> USER
+    USER -- "3 git clone / pull<br/>via clé SSH déployée<br/>sur le compte GitHub" --> GH
+
+    style INTERNET fill:#161b22,stroke:#58a6ff,stroke-width:2px,color:#e6edf3
+    style EDUROAM fill:#1a1e24,stroke:#d29922,stroke-width:2px,color:#e6edf3
+    style DOCKETU fill:#21262d,stroke:#3fb950,stroke-width:2px,color:#e6edf3
+    style GH fill:#0d419d,stroke:#58a6ff,color:#fff
+    style RUNNER fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style USER fill:#1a7f37,stroke:#3fb950,color:#fff
+    style REPO fill:#1a7f37,stroke:#3fb950,color:#fff
+    style DOCKER fill:#0d419d,stroke:#58a6ff,color:#fff
+      </pre>
+    </div>
+
+    <!-- DIAGRAMME 2 : Échanges de clés SSH          -->
+    <div class="diagram-section">
+      <h2>Échanges de clés SSH</h2>
+      <pre class="mermaid">
+%%{init: {'theme':'dark', 'themeVariables': {'fontSize':'14px'}}}%%
+flowchart TB
+    subgraph KEYS["Paire de clés ed25519"]
+        PRIV["<b>Clé privée</b>"]
+        PUB["<b>Clé publique</b>"]
+    end
+
+    subgraph RUNNER_KEYS["Self-Hosted Runner → Docketu"]
+        direction LR
+        GH_SEC["<b>GitHub Secrets</b><br/>DOCKETU_SSH_PRIVATE_KEY<br/><i>stockée chiffrée</i>"]
+        RUNNER_SSH["<b>Runner</b><br/>~/.ssh/id_ed25519<br/><i>injectée au runtime</i>"]
+        DOCK_AUTH1["<b>Docketu</b><br/>~/.ssh/authorized_keys<br/><i>accepte la connexion</i>"]
+        GH_SEC --> RUNNER_SSH
+        RUNNER_SSH -- "SSH auth OK" --> DOCK_AUTH1
+    end
+
+    subgraph GIT_KEYS["Docketu → GitHub (git clone/pull)"]
+        direction LR
+        DOCK_KEY["<b>Docketu</b><br/>~/.ssh/id_ed25519<br/><i>clé SSH du user</i>"]
+        GH_DEPLOY["<b>GitHub</b><br/>Deploy Key / SSH Key<br/><i>clé publique enregistrée</i>"]
+        DOCK_KEY -- "git clone/pull via SSH" --> GH_DEPLOY
+    end
+
+    PRIV --> GH_SEC
+    PRIV --> DOCK_KEY
+    PUB --> DOCK_AUTH1
+    PUB --> GH_DEPLOY
+
+    style KEYS fill:#6e40c9,stroke:#bc8cff,stroke-width:2px,color:#fff
+    style PRIV fill:#da3633,stroke:#f85149,color:#fff
+    style PUB fill:#1a7f37,stroke:#3fb950,color:#fff
+    style GH_SEC fill:#0d419d,stroke:#58a6ff,color:#fff
+    style RUNNER_SSH fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style DOCK_AUTH1 fill:#1a7f37,stroke:#3fb950,color:#fff
+    style DOCK_KEY fill:#da3633,stroke:#f85149,color:#fff
+    style GH_DEPLOY fill:#0d419d,stroke:#58a6ff,color:#fff
+    style RUNNER_KEYS fill:#161b22,stroke:#58a6ff,stroke-width:2px,color:#e6edf3
+    style GIT_KEYS fill:#161b22,stroke:#3fb950,stroke-width:2px,color:#e6edf3
+      </pre>
+    </div>
+
+    <!-- DIAGRAMME 3 : Séquence du workflow           -->
+    <div class="diagram-section">
+      <h2>Séquence du workflow GitHub Actions</h2>
+      <pre class="mermaid">
+%%{init: {'theme':'dark', 'themeVariables': {'fontSize':'13px'}}}%%
+sequenceDiagram
+    autonumber
+    actor DEV as Développeur
+    participant GH as GitHub<br/>main branch
+    participant RUNNER as Self-Hosted Runner<br/>(eduroam)
+    participant DOCK as Docketu<br/>(denis154u)
+
+    DEV ->>+ GH: git push (main)
+    GH ->>+ RUNNER: Déclenche workflow<br/>(runs-on: self-hosted)
+
+    Note over RUNNER: actions/checkout@v4<br/>récupère le code
+
+    RUNNER ->> RUNNER: Prépare ~/.ssh/id_ed25519<br/>(depuis GitHub Secrets)
+    RUNNER ->> RUNNER: ssh-keyscan pour<br/>known_hosts
+
+    RUNNER ->>+ DOCK: Connexion SSH<br/>(clé ed25519)
+    
+    alt Premier déploiement
+        DOCK ->> GH: git clone<br/>git@github.com:ClemDW/CrazyCharlyDays.git
+        GH -->> DOCK: Code source complet
+    else Mise à jour
+        DOCK ->> GH: git pull
+        GH -->> DOCK: Dernières modifications
+    end
+
+    Note over DOCK: Code à jour dans<br/>/users/home/denis154u/ccd
+
+    DOCK -->>- RUNNER: Déploiement terminé
+    RUNNER -->>- GH: Job réussi
+    GH -->>- DEV: Workflow terminé
+      </pre>
+    </div>
+
+    <!-- DIAGRAMME 4 : Stack Docker sur Docketu       -->
+    <div class="diagram-section">
+      <h2>Stack Docker Compose déployée sur Docketu</h2>
+      <pre class="mermaid">
+%%{init: {'theme':'dark', 'themeVariables': {'fontSize':'13px'}}}%%
+flowchart TB
+    CLIENT["<b>Client / Navigateur</b>"]
+    
+    subgraph DOCKETU["Docketu — docker-compose"]
+        LB["<b>Nginx Load Balancer</b><br/>:80"]
+        FE["<b>Frontend</b><br/>Vue.js · Vite<br/>:5173"]
+        BE1["<b>Backend 1</b><br/>Node.js<br/>:3000"]
+        BE2["<b>Backend 2</b><br/>Node.js<br/>:3000"]
+        DB[("<b>PostgreSQL</b><br/>:5432")]
+        ADM["<b>Adminer</b><br/>:8080"]
+    end
+
+    CLIENT --> LB
+    LB --> FE
+    LB --> BE1
+    LB --> BE2
+    BE1 --> DB
+    BE2 --> DB
+    ADM --> DB
+
+    style CLIENT fill:#6e40c9,stroke:#bc8cff,color:#fff
+    style DOCKETU fill:#161b22,stroke:#3fb950,stroke-width:2px,color:#e6edf3
+    style LB fill:#d29922,stroke:#e3b341,color:#000
+    style FE fill:#0d419d,stroke:#58a6ff,color:#fff
+    style BE1 fill:#1a7f37,stroke:#3fb950,color:#fff
+    style BE2 fill:#1a7f37,stroke:#3fb950,color:#fff
+    style DB fill:#da3633,stroke:#f85149,color:#fff
+    style ADM fill:#6e40c9,stroke:#bc8cff,color:#fff
+      </pre>
+    </div>
+
+    <!-- LÉGENDE                                      -->
+    <div class="legend">
+      <div class="legend-card">
+        <h3>Self-Hosted Runner</h3>
+        <p>
+          Machine personnelle connectée au réseau <b>eduroam</b> (WiFi universitaire).
+          Nécessaire car <b>Docketu n'est pas accessible depuis Internet</b>, uniquement
+          depuis le réseau universitaire. Le runner exécute les jobs GitHub Actions localement.
+        </p>
+      </div>
+      <div class="legend-card">
+        <h3>Clé SSH — Runner → Docketu <span class="badge badge-ssh">SSH</span></h3>
+        <p>
+          La <b>clé privée</b> est stockée dans les <b>GitHub Secrets</b>
+          (<code>DOCKETU_SSH_PRIVATE_KEY</code>). Au runtime, elle est écrite dans
+          <code>~/.ssh/id_ed25519</code> sur le runner pour se connecter à Docketu.
+          La <b>clé publique</b> correspondante est dans <code>authorized_keys</code> du user Docketu.
+        </p>
+      </div>
+      <div class="legend-card">
+        <h3>Clé SSH — Docketu → GitHub <span class="badge badge-git">Git</span></h3>
+        <p>
+          Le user <code>denis154u</code> sur Docketu possède une <b>clé SSH</b> dont la partie
+          publique est enregistrée sur GitHub (Deploy Key ou clé SSH du compte).
+          Cela permet le <code>git clone</code> / <code>git pull</code> via SSH
+          depuis Docketu.
+        </p>
+      </div>
+      <div class="legend-card">
+        <h3>Réseau Universitaire <span class="badge badge-net">Réseau</span></h3>
+        <p>
+          Docketu est isolé sur le réseau interne de l'université.
+          Le self-hosted runner doit être sur <b>eduroam</b> pour atteindre le serveur.
+          C'est la contrainte qui impose l'utilisation d'un runner auto-hébergé
+          plutôt que les runners cloud de GitHub.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      securityLevel: 'loose',
+      flowchart: { curve: 'basis', htmlLabels: true },
+      sequence: { mirrorActors: false }
+    });
+  </script>
+</body>
+</html>
