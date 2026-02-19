@@ -1,7 +1,4 @@
-type ScoreResult = {
-    score: number;
-    perBoxScore: Map<string, number>
-}
+import { BoxWithArticle, Campaign, State, UserToChild, ScoreResult } from "./Temp";
 
 const INVALID_SCORE = -9999999999999;
 
