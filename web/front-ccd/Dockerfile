@@ -11,5 +11,8 @@ RUN npm install
 # Copier le reste du code source
 COPY . .
 
-# Lancer le serveur en mode dev (avec watch pour hot-reload)
-CMD ["npm", "run", "dev"]
+# Exposer le port Vite
+EXPOSE 5173
+
+# Lancer le serveur de dev Vite
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

@@ -1,10 +1,29 @@
 {
-    "name": "back-ccd",
-    "version": "1.0.0",
-    "description": "Backend API pour CrazyCharlyDays",
-    "main": "src/index.js",
-    "scripts": {
-        "dev": "node --watch src/index.js",
-        "start": "node src/index.js"
-    }
+  "name": "back-ccd",
+  "version": "1.0.0",
+  "description": "Back pour CrazyCharlyDays",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npx ts-node src/server.ts",
+    "start": "node dist/server.js",
+    "test": "npm i && tsc && npx ts-node src/test.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.3.1",
+    "express": "^5.2.1",
+    "pg": "^8.11.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.28",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.3.0",
+    "@types/uuid": "^10.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
 }
