@@ -9,9 +9,8 @@
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "strictPropertyInitialization": false,
     "lib": ["esnext", "dom"],
-  }
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*.ts"
