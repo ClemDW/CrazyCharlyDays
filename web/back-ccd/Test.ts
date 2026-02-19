@@ -60,7 +60,7 @@ const boxes2: BoxWithArticle[] = [
 // ====== TEST ======
 
 const scorer = new Score();
-const result1 = scorer.evaluateComposition(boxes1, campaign, users);
+const result1 = scorer.evaluateComposition(boxes, campaign, users);
 
 console.log("Score calculé :", result1.score);
 console.log("Détail par box :", result1.perBoxScore);
