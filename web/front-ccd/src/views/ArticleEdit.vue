@@ -11,6 +11,7 @@ export default {
         state: "",
         price: 0,
         weight: 0,
+        code_barre: "",
       },
       loading: true,
       submitting: false,
@@ -24,7 +25,7 @@ export default {
       try {
         const response = await this.$api.get(`/articles/${this.id}`);
         this.article = response.data;
-        
+
         // Pré-remplissage du formulaire
         this.form = {
           description: this.article.description,
@@ -33,6 +34,7 @@ export default {
           state: this.article.state,
           price: this.article.price,
           weight: this.article.weight,
+          code_barre: this.article.code_barre || "",
         };
       } catch (err) {
         console.error("Erreur chargement article:", err);
@@ -50,18 +52,23 @@ export default {
         await this.$api.put(`/articles/${this.id}`, this.form);
         this.success = "Article mis à jour avec succès !";
         setTimeout(() => {
-          this.$router.push({ name: 'article-detail', params: { id: this.id } });
+          this.$router.push({
+            name: "article-detail",
+            params: { id: this.id },
+          });
         }, 1500);
       } catch (err) {
         console.error("Erreur lors de la mise à jour:", err);
-        this.error = err.response?.data?.message || "Une erreur est survenue lors de la sauvegarde.";
+        this.error =
+          err.response?.data?.message ||
+          "Une erreur est survenue lors de la sauvegarde.";
       } finally {
         this.submitting = false;
       }
     },
     cancel() {
-      this.$router.push({ name: 'article-detail', params: { id: this.id } });
-    }
+      this.$router.push({ name: "article-detail", params: { id: this.id } });
+    },
   },
   mounted() {
     this.fetchArticle();
@@ -123,18 +130,48 @@ export default {
         <div class="form-row">
           <div class="form-group">
             <label>Prix (€)</label>
-            <input v-model.number="form.price" type="number" step="0.01" min="0" required />
+            <input
+              v-model.number="form.price"
+              type="number"
+              step="0.01"
+              min="0"
+              required
+            />
           </div>
           <div class="form-group">
             <label>Poids (kg)</label>
-            <input v-model.number="form.weight" type="number" step="0.01" min="0" required />
+            <input
+              v-model.number="form.weight"
+              type="number"
+              step="0.01"
+              min="0"
+              required
+            />
           </div>
         </div>
 
+        <div class="form-group">
+          <label>Code-barre / QR Code (Optionnel)</label>
+          <input
+            v-model="form.code_barre"
+            type="text"
+            placeholder="Scannez ou saisissez un code..."
+          />
+        </div>
+
         <div class="actions">
-          <button type="button" class="btn secondary" @click="cancel" :disabled="submitting">Annuler</button>
+          <button
+            type="button"
+            class="btn secondary"
+            @click="cancel"
+            :disabled="submitting"
+          >
+            Annuler
+          </button>
           <button type="submit" class="btn primary" :disabled="submitting">
-            {{ submitting ? 'Enregistrement...' : 'Enregistrer les modifications' }}
+            {{
+              submitting ? "Enregistrement..." : "Enregistrer les modifications"
+            }}
           </button>
         </div>
       </form>

@@ -8,6 +8,7 @@ const ageRange = ref("BB");
 const state = ref("N");
 const price = ref<number | null>(null);
 const weight = ref<number | null>(null);
+const code_barre = ref("");
 const photoPreview = ref<string | null>(null);
 
 const errorMessage = ref("");
@@ -50,26 +51,22 @@ async function handleSubmit() {
     return;
   }
 
-  const formData = new FormData();
-  formData.append("description", description.value.trim());
-  formData.append("category", category.value);
-  formData.append("age_range", ageRange.value);
-  formData.append("state", state.value);
-  formData.append("price", String(price.value));
-  formData.append("weight", String(weight.value));
-
-  // Attach the actual file if selected
-  const fileInput = document.getElementById("photo") as HTMLInputElement;
-  if (fileInput?.files?.[0]) {
-    formData.append("picture", fileInput.files[0]);
-  }
+  const payload = {
+    description: description.value.trim(),
+    category: category.value,
+    age_range: ageRange.value,
+    state: state.value,
+    price: price.value,
+    weight: weight.value,
+    code_barre: code_barre.value.trim() || undefined,
+    picture: photoPreview.value || undefined,
+  };
 
   loading.value = true;
   try {
     const response = await axios.post(
       "http://localhost:3000/articles",
-      formData,
-      { headers: { "Content-Type": "multipart/form-data" } },
+      payload,
     );
     console.log("Article créé :", response.data);
     successMessage.value = `Article « ${description.value.trim()} » ajouté avec succès (ID : ${response.data.id_article}).`;
@@ -78,7 +75,9 @@ async function handleSubmit() {
     description.value = "";
     price.value = null;
     weight.value = null;
+    code_barre.value = "";
     photoPreview.value = null;
+    const fileInput = document.getElementById("photo") as HTMLInputElement;
     if (fileInput) fileInput.value = "";
   } catch (error: any) {
     console.error("Erreur lors de la création :", error);
@@ -171,6 +170,20 @@ async function handleSubmit() {
         </div>
       </div>
 
+      <!-- Barcode / QR Code -->
+      <div class="form-group">
+        <label for="code_barre">Code-barre / QR Code (Optionnel)</label>
+        <input
+          id="code_barre"
+          v-model="code_barre"
+          type="text"
+          placeholder="Scannez ou saisissez un code..."
+        />
+        <p class="help-text">
+          Utilisez ce champ pour associer un identifiant physique à l'article.
+        </p>
+      </div>
+
       <!-- Photo upload -->
       <div class="form-group">
         <label for="photo">Photo de l'article</label>
@@ -216,6 +229,12 @@ h1 {
   color: #666;
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
+}
+
+.help-text {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.25rem;
 }
 
 .form-group {

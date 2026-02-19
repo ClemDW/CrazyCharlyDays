@@ -32,4 +32,7 @@ export class Article extends BaseEntity {
 
   @Column({ type: "text", nullable: true })
   picture: string;
+
+  @Column({ type: "varchar", length: 100, nullable: true })
+  code_barre: string;
 }

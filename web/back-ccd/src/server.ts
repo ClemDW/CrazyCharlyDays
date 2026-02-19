@@ -5,7 +5,6 @@ dotenv.config({ path: path.join(__dirname, "../../../.env") });
 import "reflect-metadata";
 import express, { Request, Response } from "express";
 import cors from "cors";
-import multer from "multer";
 import { Article } from "./entities/Article";
 import { ArticleController } from "./controllers/articleController";
 import { UserController } from "./controllers/userController";
@@ -17,23 +16,12 @@ import { CampaignController } from "./controllers/campaignController";
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" })); // Increase limit for Base64 images
 
 const PORT = process.env.PORT || process.env.BACKEND_PORT || 3000;
 
-// Serve uploaded images as static files
+// Serve uploaded images (Base64 saved as files) as static files
 app.use("/images", express.static(path.join(__dirname, "../images")));
-
-// Multer config: store uploads in images/ with unique filenames
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, path.join(__dirname, "../images")),
-  filename: (_req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, uniqueSuffix + ext);
-  },
-});
-const upload = multer({ storage });
 
 /**
  * Endpoint pour lancer l'optimisation.
@@ -48,7 +36,7 @@ app.get("/optimize", OptimizationController.optimize);
 
 app.get("/articles", ArticleController.getAll);
 app.get("/articles/:id", ArticleController.getOne);
-app.post("/articles", upload.single("picture"), ArticleController.create);
+app.post("/articles", ArticleController.create);
 app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
   try {
     const repo = AppDataSource.getRepository(Article);

@@ -71,6 +71,33 @@ export default {
         this.currentPage = 1;
       },
     },
+    searchQuery(newVal) {
+      if (!newVal) return;
+
+      // 1. If it's a full URL from our app
+      if (newVal.includes("/catalog/")) {
+        const parts = newVal.split("/catalog/");
+        if (parts.length > 1) {
+          const id = parts[1].split("/")[0].split("?")[0]; // Clean UUID
+          if (id && id.length >= 36) {
+            // Basic UUID length check
+            this.$router.push({ name: "article-detail", params: { id } });
+            return;
+          }
+        }
+      }
+
+      // 2. If it matches a barcode exactly
+      const matchedArticle = this.articles.find(
+        (a) => a.code_barre && a.code_barre === newVal.trim(),
+      );
+      if (matchedArticle) {
+        this.$router.push({
+          name: "article-detail",
+          params: { id: matchedArticle.id_article || matchedArticle.id },
+        });
+      }
+    },
   },
   methods: {
     fetchCatalog() {
