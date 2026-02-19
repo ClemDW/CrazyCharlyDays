@@ -1,9 +1,13 @@
-import { BoxWithArticle } from "./Temp";
 import Score from "./Score";
 import { Campaign } from "../entities/Campaign";
-import { UserToChild } from "../entities/UserToChild";
+import { Usertochild } from "../entities/UserToChild";
 import { Article } from "../entities/Article";
-import * as fs from "fs/promises";
+import {Box} from "../entities/Box";
+
+type BoxWithArticle = {
+    box: Box
+    articles: Article[]
+}
 
 type CompositionResult = {
     boxes: BoxWithArticle[];
@@ -20,10 +24,15 @@ type RecuitOptions = {
 };
 
 function deepCloneBoxes(boxes: BoxWithArticle[]): BoxWithArticle[] {
-    return boxes.map(b => ({
-        box: { ...b.box },
-        articles: b.articles.slice()
-    }));
+    return boxes.map(b => {
+        const newBox = new Box();
+        Object.assign(newBox, b.box);
+
+        return {
+            box: newBox,
+            articles: b.articles.slice()
+        };
+    });
 }
 
 function randInt(max: number) {
@@ -49,21 +58,24 @@ export default class RecuitSimule {
     optimize(
         articles: Article[],
         campaign: Campaign,
-        usersToChild: UserToChild[]
+        usersToChild: Usertochild[]
     ): CompositionResult {
         // box vide
-        const initialBoxes: BoxWithArticle[] = usersToChild.map((utc, index) => ({
-            box: {
-                id_box: "box_" + index,
-                id_user: utc.id_user,
-                id_camp: campaign.id_camp,
-                score_box: 0,
-                total_weight: 0,
-                total_price: 0,
-                validated: false
-            },
-            articles: []
-        }));
+        const initialBoxes: BoxWithArticle[] = usersToChild.map((utc, index) => {
+            const b = new Box();
+            b.id_box = "box_" + index;
+            b.id_user = utc.id_user;
+            b.id_camp = campaign.id_camp;
+            b.score_box = 0;
+            b.total_weight = 0;
+            b.total_price = 0;
+            b.validated = false;
+
+            return {
+                box: b,
+                articles: []
+            };
+        });
 
         const articlesById = new Map<string, Article>();
         for (const a of articles) articlesById.set(a.id_article, a);

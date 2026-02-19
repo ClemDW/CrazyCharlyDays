@@ -8,16 +8,13 @@ import Score from "./Score";
 export default class Solver {
 
     /**
-     * Résout le problème d'optimisation en chargeant les données depuis un CSV,
-     * en exécutant l'algorithme Glouton, et en retournant le résultat.
-     * @param inputCSVPath Chemin vers le fichier CSV d'entrée.
+     * Résout le problème d'optimisation, en exécutant l'algorithme Glouton, et en retournant le résultat.
      */
     async solve() {
         // Récupérer les données depuis la DB
         const articles = await Article.find();
 
-        // On suppose qu'il n'y a qu'une campagne active ou la dernière
-        // Le CSV loader crée une nouvelle campagne, on prend la dernière créée
+        // On prend la dernière campagne
         const campaign = await Campaign.findOne({
             order: { date: "DESC" }
         });

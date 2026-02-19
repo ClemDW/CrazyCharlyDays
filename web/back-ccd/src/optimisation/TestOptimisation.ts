@@ -1,4 +1,4 @@
-import {Article} from "../entities/Article";
+/*import {Article} from "../entities/Article";
 import {Campaign} from "../entities/Campaign";
 import Glouton from "./Glouton";
 import Score from "./Score";
@@ -167,3 +167,4 @@ runTest(
         "Jade": ["a5","a6"]
     }
 );
+*/

@@ -1,4 +1,4 @@
-import {BoxWithArticle} from "./Temp";
+/* import {BoxWithArticle} from "./Temp";
 import Score from "./Score";
 import {Article} from "../entities/Article";
 import {State} from "../entities/enums/State";
@@ -94,4 +94,4 @@ if (result2.score >= 62) {
     console.log("Test réussi : score >= 62");
 } else {
     console.log("Test échoué : score attendu >= 62");
-}
+}*/

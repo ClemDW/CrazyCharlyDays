@@ -1,13 +1,9 @@
-import { BoxWithArticle } from "./Temp";
+import { BoxWithArticle, CompositionResult } from "./Temp";
 import Score from "./Score";
 import { Campaign } from "../entities/Campaign";
-import { UserToChild } from "../entities/UserToChild";
+import { Usertochild } from "../entities/UserToChild";
 import { Article } from "../entities/Article";
-
-type CompositionResult = {
-    boxes: BoxWithArticle[],
-    score: number
-}
+import { Box } from "../entities/Box";
 
 export default class Glouton {
 
@@ -16,22 +12,25 @@ export default class Glouton {
     optimize(
         articles: Article[],
         campaign: Campaign,
-        usersToChild: UserToChild[]
+        usersToChild: Usertochild[]
     ): CompositionResult {
 
         // box vides
-        const boxes: BoxWithArticle[] = usersToChild.map((utc, index) => ({
-            box: {
-                id_box: "box_" + index,
-                id_user: utc.id_user,
-                id_camp: campaign.id_camp,
-                score_box: 0,
-                total_weight: 0,
-                total_price: 0,
-                validated: false
-            },
-            articles: []
-        }));
+        const boxes: BoxWithArticle[] = usersToChild.map((utc, index) => {
+            const b = new Box();
+            b.id_box = "box_" + index;
+            b.id_user = utc.id_user;
+            b.id_camp = campaign.id_camp;
+            b.score_box = 0;
+            b.total_weight = 0;
+            b.total_price = 0;
+            b.validated = false;
+
+            return {
+                box: b,
+                articles: []
+            };
+        });
 
         const remainingArticles = new Set(articles);
 

@@ -4,6 +4,7 @@ import cors from "cors";
 import { Article } from "./entities/Article";
 import { ArticleController } from "./controllers/articleController";
 import { UserController } from "./controllers/userController";
+import { OptimizationController } from "./controllers/optimizationController";
 import { AppDataSource } from "./data-source";
 import { UserToChildController } from "./controllers/userToChildController";
 import { BoxController } from "./controllers/boxController";
@@ -15,6 +16,16 @@ app.use(express.json());
 
 const PORT = 3000;
 
+/**
+ * Endpoint pour lancer l'optimisation.
+ * Utilise les données existantes en base (dernière campagne, tous les articles).
+ * Retourne le fichier CSV résultant.
+ */
+app.post("/optimize", OptimizationController.optimize);
+
+// ════════════════════════════════════════════
+//  📦 ARTICLES
+// ════════════════════════════════════════════
 
 app.get("/articles", ArticleController.getAll);
 app.get("/articles/:id", ArticleController.getOne);
