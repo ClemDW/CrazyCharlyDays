@@ -44,6 +44,35 @@ export default {
                 categories: [...DEFAULT_CATEGORIES],
               },
             ],
+            boxes: [
+              {
+                id: 1,
+                name: "Box de Noël 2025",
+                date: "2025-12-15",
+                articles: [
+                  { id: 101, name: "Lego Star Wars", category: "Construction" },
+                  { id: 102, name: "Poupée Elsa", category: "Figurines" },
+                  {
+                    id: 103,
+                    name: "Livre : Le Petit Prince",
+                    category: "Livres",
+                  },
+                ],
+              },
+              {
+                id: 2,
+                name: "Box Automne 2025",
+                date: "2025-09-20",
+                articles: [
+                  { id: 201, name: "Puzzle Forêt", category: "Éveil" },
+                  {
+                    id: 202,
+                    name: "Voiture Télécommandée",
+                    category: "Extérieur",
+                  },
+                ],
+              },
+            ],
           };
         } else {
           this.error = "Aucun abonné trouvé avec cet email.";
@@ -113,6 +142,38 @@ export default {
           {{ loading ? "Enregistrement..." : "Enregistrer les modifications" }}
         </button>
       </div>
+
+      <!-- Box History Section -->
+      <section class="section history-section">
+        <hr />
+        <h2>Historique de mes Box</h2>
+        <p class="desc">Retrouvez ici les box que vous avez déjà reçues.</p>
+
+        <div
+          v-if="subscriber.boxes && subscriber.boxes.length > 0"
+          class="box-list"
+        >
+          <div v-for="box in subscriber.boxes" :key="box.id" class="box-card">
+            <div class="box-header">
+              <span class="box-name">{{ box.name }}</span>
+              <span class="box-date">{{
+                new Date(box.date).toLocaleDateString()
+              }}</span>
+            </div>
+            <ul class="article-list">
+              <li
+                v-for="article in box.articles"
+                :key="article.id"
+                class="article-item"
+              >
+                <span class="article-name">{{ article.name }}</span>
+                <span class="article-category">{{ article.category }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p v-else class="no-history">Vous n'avez pas encore reçu de box.</p>
+      </section>
     </div>
   </div>
 </template>
@@ -230,5 +291,91 @@ h2 {
 }
 .save-btn:hover {
   background: #219150;
+}
+
+/* History Section Styles */
+.history-section {
+  margin-top: 3rem;
+}
+
+.box-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.box-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 1.25rem;
+  background: #fafafa;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.box-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.box-name {
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.box-date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.article-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.article-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-size: 0.95rem;
+  border-bottom: 1px dashed #eee;
+}
+
+.article-item:last-child {
+  border-bottom: none;
+}
+
+.article-category {
+  font-size: 0.8rem;
+  color: #4f8cff;
+  background: rgba(79, 140, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.no-history {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  margin-top: 2rem;
+}
+
+hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid #eee;
 }
 </style>
