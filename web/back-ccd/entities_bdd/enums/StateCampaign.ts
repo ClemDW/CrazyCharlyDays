@@ -1,5 +1,5 @@
 export enum StateCampaign { 
-    IN_PROGRESS = 0,
-    VALIDATED = 1,
-    FINISHED = 2
+    IN_PROGRESS = "En cours",
+    VALIDATED = "Validée",
+    FINISHED = "Terminée"
 };
