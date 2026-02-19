@@ -43,26 +43,24 @@ npm run build
 
 ## 📋 État d'avancement des fonctionnalités
 
-| ID | Catégorie | Fonctionnalité | Complexité | Statut |
-| :-- | :--- | :--- | :---: | :---: |
-| **1** | **Articles** | Ajout d’un article (Admin) | ⭐ | ❌ |
-| **2** | **Articles** | Affichage du catalogue (Pagination 10/page) | ⭐⭐ | ❌ |
-| **3** | **Articles** | Filtrage avancé (Catégorie, Âge, État) | ⭐⭐ | ❌ |
-| **4** | **Articles** | Modification d’un article (Gestion des stocks) | ⭐⭐ | ❌ |
-| **5** | **Articles** | Identification par Code-barre / QR Code | ⭐⭐⭐ | ❌ |
-| **6** | **Abonnés** | Inscription abonné (Préférences & Cookies) | ⭐⭐ | ❌ |
-| **7** | **Abonnés** | Liste des abonnés (Admin) | ⭐ | ❌ |
-| **8** | **Abonnés** | Modification des préférences (via Email) | ⭐⭐ | ❌ |
-| **9** | **Box** | Paramétrage de campagne (Poids max) | ⭐ | ❌ |
-| **10** | **Box** | Lancement de la composition (Optimisation) | ⭐⭐⭐ | ❌ |
-| **11** | **Box** | Affichage des box composées (Scores & Détails) | ⭐⭐ | ❌ |
-| **12** | **Box** | Validation individuelle des box | ⭐⭐ | ❌ |
-| **13** | **Box** | Consultation de sa box (Espace Abonné) | ⭐ | ❌ |
-| **14** | **Historique**| Historique personnel des box reçues | ⭐⭐ | ❌ |
-| **15** | **Historique**| Historique global & Synthèse (Admin) | ⭐⭐ | ❌ |
-| **16** | **Système** | Authentification (Abonné vs Gestionnaire) | ⭐⭐ | ❌ |
-| **17** | **Système** | Tableau de bord (Statistiques & Graphiques) | ⭐⭐⭐ | ❌ |
-| **18** | **Bonus** | Génération de Bon de préparation (PDF/Print) | ⭐⭐⭐ | ❌ |
-| **19** | **Bonus** | Notifications par Email (MailCatcher) | ⭐⭐⭐ | ❌ |
-
----
+| ID | Fonctionnalité | Complexité | Statut |
+| :-- | :--- | :--- | :---: |
+| **1** | Ajout d’un article (Admin) | ⭐ (Facile) | ❌ |
+| **2** | Affichage du catalogue (Pagination 10/page) | ⭐ (Facile) | ❌ |
+| **3** | Filtrage avancé (Catégorie, Âge, État) | ⭐⭐ (Avancé) | ❌ |
+| **4** | Modification d’un article (Gestion des stocks) | ⭐⭐ (Avancé) | ❌ |
+| **5** | Identification par Code-barre / QR Code | ⭐⭐ (Avancé) | ❌ |
+| **6** | Inscription abonné (Préférences & Cookies) | ⭐ (Facile) | ❌ |
+| **7** | Affichage de la liste des abonnés (Admin) | ⭐ (Facile) | ❌ |
+| **8** | Modification des préférences (via Email) | ⭐⭐ (Avancé) | ❌ |
+| **9** | Paramétrage de campagne (Poids max) | ⭐ (Facile) | ❌ |
+| **10** | Lancement de la composition (Optimisation) | ⭐ (Facile) | ❌ |
+| **11** | Affichage des box composées (Scores & Détails) | ⭐ (Facile) | ❌ |
+| **12** | Validation individuelle des box | ⭐⭐ (Avancé) | ❌ |
+| **13** | Consultation de sa box (Espace Abonné) | ⭐ (Facile) | ❌ |
+| **14** | Historique personnel des box reçues | ⭐⭐ (Avancé) | ❌ |
+| **15** | Historique global & Synthèse (Admin) | ⭐⭐ (Avancé) | ❌ |
+| **16** | Authentification (Abonné vs Gestionnaire) | ⭐⭐ (Avancé) | ❌ |
+| **17** | Tableau de bord (Statistiques & Graphiques) | ⭐⭐ (Avancé) | ❌ |
+| **18** | Bon de préparation (Génération document) | ⭐⭐⭐ (Super avancé) | ❌ |
+| **19** | Notification par email (MailCatcher) | ⭐⭐⭐ (Super avancé) | ❌ |
