@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 web/front-ccd/node_modules
+web/back-ccd/node_modules
 .DS_Store
 dist
 dist-ssr
