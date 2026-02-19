@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import axios from "axios";
 
 const description = ref("");
 const category = ref("SOC");
@@ -11,6 +12,7 @@ const photoPreview = ref<string | null>(null);
 
 const errorMessage = ref("");
 const successMessage = ref("");
+const loading = ref(false);
 
 function onPhotoChange(event: Event) {
   const input = event.target as HTMLInputElement;
@@ -31,7 +33,7 @@ function removePhoto() {
   if (input) input.value = "";
 }
 
-function handleSubmit() {
+async function handleSubmit() {
   errorMessage.value = "";
   successMessage.value = "";
 
@@ -48,26 +50,44 @@ function handleSubmit() {
     return;
   }
 
-  const article = {
-    description: description.value.trim(),
-    category: category.value,
-    ageRange: ageRange.value,
-    state: state.value,
-    price: price.value,
-    weight: weight.value,
-    photo: photoPreview.value,
-  };
+  const formData = new FormData();
+  formData.append("description", description.value.trim());
+  formData.append("category", category.value);
+  formData.append("age_range", ageRange.value);
+  formData.append("state", state.value);
+  formData.append("price", String(price.value));
+  formData.append("weight", String(weight.value));
 
-  console.log("Article créé :", article);
-  successMessage.value = `Article « ${article.description} » ajouté avec succès.`;
+  // Attach the actual file if selected
+  const fileInput = document.getElementById("photo") as HTMLInputElement;
+  if (fileInput?.files?.[0]) {
+    formData.append("picture", fileInput.files[0]);
+  }
 
-  // Reset
-  description.value = "";
-  price.value = null;
-  weight.value = null;
-  photoPreview.value = null;
-  const input = document.getElementById("photo") as HTMLInputElement;
-  if (input) input.value = "";
+  loading.value = true;
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/articles",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } },
+    );
+    console.log("Article créé :", response.data);
+    successMessage.value = `Article « ${description.value.trim()} » ajouté avec succès (ID : ${response.data.id_article}).`;
+
+    // Reset
+    description.value = "";
+    price.value = null;
+    weight.value = null;
+    photoPreview.value = null;
+    if (fileInput) fileInput.value = "";
+  } catch (error: any) {
+    console.error("Erreur lors de la création :", error);
+    errorMessage.value =
+      error.response?.data?.message ||
+      "Erreur lors de la création de l'article.";
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -173,7 +193,9 @@ function handleSubmit() {
       <p v-if="errorMessage" class="msg error">{{ errorMessage }}</p>
       <p v-if="successMessage" class="msg success">{{ successMessage }}</p>
 
-      <button type="submit" class="btn-submit">Ajouter l'article</button>
+      <button type="submit" class="btn-submit" :disabled="loading">
+        {{ loading ? "Ajout en cours..." : "Ajouter l'article" }}
+      </button>
     </form>
   </div>
 </template>
