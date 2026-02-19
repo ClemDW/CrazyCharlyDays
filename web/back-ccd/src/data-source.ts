@@ -8,7 +8,7 @@ import { Article } from "./entities/Article";
 import { Box } from "./entities/Box";
 import { Campaign } from "./entities/Campaign";
 import { User } from "./entities/User";
-import { UserToChild } from "./entities/UserToChild";
+import { Usertochild } from "./entities/UserToChild";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -18,7 +18,7 @@ export const AppDataSource = new DataSource({
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
     logging: true,
-    entities: [Article, Box, Campaign, User, UserToChild],
+    entities: [Article, Box, Campaign, User, Usertochild],
     subscribers: [],
     migrations: [],
 });
