@@ -64,7 +64,7 @@ async function loadCSV(CSVFilePath: string) {
             if (currentSection === "articles") {
 
                 const article = new Article();
-                // data[0] est l'ID (a1, a2...), on l'ignore si la DB génère un UUID, 
+                // data[0] est l'ID (a1, a2...), on l'ignore si la DB génère un UUID,
                 // ou on l'utilise si id_article est une string manuelle.
                 article.description = data[1];
                 article.category = data[2] as CategoryKey;

@@ -2,11 +2,8 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { Article } from "./entities/Article";
-import { User } from "./entities/User";
-import { Usertochild } from "./entities/UserToChild";
-import { Box } from "./entities/Box";
-import { Campaign } from "./entities/Campaign";
 import { ArticleController } from "./controllers/articleController";
+import { OptimizationController } from "./controllers/optimizationController";
 import { AppDataSource } from "./data-source";
 
 const app = express();
@@ -14,6 +11,13 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = 3000;
+
+/**
+ * Endpoint pour lancer l'optimisation.
+ * Utilise les données existantes en base (dernière campagne, tous les articles).
+ * Retourne le fichier CSV résultant.
+ */
+app.post("/optimize", OptimizationController.optimize);
 
 // ════════════════════════════════════════════
 //  📦 ARTICLES
