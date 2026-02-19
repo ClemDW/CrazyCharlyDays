@@ -40,3 +40,29 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## 📋 État d'avancement des fonctionnalités
+
+| ID | Catégorie | Fonctionnalité | Complexité | Statut |
+| :-- | :--- | :--- | :---: | :---: |
+| **1** | **Articles** | Ajout d’un article (Admin) | ⭐ | ❌ |
+| **2** | **Articles** | Affichage du catalogue (Pagination 10/page) | ⭐⭐ | ❌ |
+| **3** | **Articles** | Filtrage avancé (Catégorie, Âge, État) | ⭐⭐ | ❌ |
+| **4** | **Articles** | Modification d’un article (Gestion des stocks) | ⭐⭐ | ❌ |
+| **5** | **Articles** | Identification par Code-barre / QR Code | ⭐⭐⭐ | ❌ |
+| **6** | **Abonnés** | Inscription abonné (Préférences & Cookies) | ⭐⭐ | ❌ |
+| **7** | **Abonnés** | Liste des abonnés (Admin) | ⭐ | ❌ |
+| **8** | **Abonnés** | Modification des préférences (via Email) | ⭐⭐ | ❌ |
+| **9** | **Box** | Paramétrage de campagne (Poids max) | ⭐ | ❌ |
+| **10** | **Box** | Lancement de la composition (Optimisation) | ⭐⭐⭐ | ❌ |
+| **11** | **Box** | Affichage des box composées (Scores & Détails) | ⭐⭐ | ❌ |
+| **12** | **Box** | Validation individuelle des box | ⭐⭐ | ❌ |
+| **13** | **Box** | Consultation de sa box (Espace Abonné) | ⭐ | ❌ |
+| **14** | **Historique**| Historique personnel des box reçues | ⭐⭐ | ❌ |
+| **15** | **Historique**| Historique global & Synthèse (Admin) | ⭐⭐ | ❌ |
+| **16** | **Système** | Authentification (Abonné vs Gestionnaire) | ⭐⭐ | ❌ |
+| **17** | **Système** | Tableau de bord (Statistiques & Graphiques) | ⭐⭐⭐ | ❌ |
+| **18** | **Bonus** | Génération de Bon de préparation (PDF/Print) | ⭐⭐⭐ | ❌ |
+| **19** | **Bonus** | Notifications par Email (MailCatcher) | ⭐⭐⭐ | ❌ |
+
+---
