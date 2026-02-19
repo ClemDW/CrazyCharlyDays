@@ -1,8 +1,8 @@
 import { BoxWithArticle } from "./Temp";
 import Score from "./Score";
-import {Campaign} from "../entities/Campaign";
-import {UserToChild} from "../entities/UserToChild";
-import {Article} from "../entities/Article";
+import { Campaign } from "../entities/Campaign";
+import { UserToChild } from "../entities/UserToChild";
+import { Article } from "../entities/Article";
 
 type CompositionResult = {
     boxes: BoxWithArticle[],
@@ -19,20 +19,24 @@ export default class Glouton {
         usersToChild: UserToChild[]
     ): CompositionResult {
 
-        // Initialisation correcte des boxes
-        let boxes: BoxWithArticle[] = usersToChild.map((utc, index) => ({
+        // Initialisation des box vides
+        const boxes: BoxWithArticle[] = usersToChild.map((utc, index) => ({
             box: {
                 id_box: "box_" + index,
-                id_user: utc.id_user
+                id_user: utc.id_user,
+                id_camp: campaign.id_camp,
+                score_box: 0,
+                total_weight: 0,
+                total_price: 0,
+                validated: false
             },
             articles: []
         }));
 
-        let remainingArticles = [...articles];
+        const remainingArticles = new Set(articles);
 
-        // Score initial
-        this.scoreService.usedArticles.clear();
-        let currentScore = this.scoreService.evaluateComposition(boxes, campaign, usersToChild).score;
+        let currentScore =
+            this.scoreService.evaluateComposition(boxes, campaign, usersToChild).score;
 
         let improved = true;
 
@@ -40,32 +44,30 @@ export default class Glouton {
             improved = false;
 
             let bestGain = 0;
-            let bestMove: {
-                article: Article,
-                box: BoxWithArticle
-            } | null = null;
+            let bestArticle: Article | null = null;
+            let bestBox: BoxWithArticle | null = null;
 
             for (const article of remainingArticles) {
 
                 for (const box of boxes) {
 
-                    const user = usersToChild.find(u => u.id_user === box.box.id_user);
+                    const user = usersToChild.find(
+                        u => u.id_user === box.box.id_user
+                    );
                     if (!user) continue;
 
-                    // compatibilité âge
-                    if (user.age_range !== article.age_range) continue;
+                    // compatibilité âge rapide
+                    if (article.age_range !== user.age_range) continue;
 
-                    // contrainte poids
-                    const currentWeight = box.articles.reduce((s, a) => s + a.weight, 0);
-                    if (currentWeight + article.weight > campaign.max_weight)
-                        continue;
-
-                    // Simulation
+                    // simulation propre
                     box.articles.push(article);
 
-                    this.scoreService.usedArticles.clear();
                     const newScore =
-                        this.scoreService.evaluateComposition(boxes, campaign, usersToChild).score;
+                        this.scoreService.evaluateComposition(
+                            boxes,
+                            campaign,
+                            usersToChild
+                        ).score;
 
                     const gain = newScore - currentScore;
 
@@ -73,19 +75,23 @@ export default class Glouton {
 
                     if (gain > bestGain) {
                         bestGain = gain;
-                        bestMove = { article, box };
+                        bestArticle = article;
+                        bestBox = box;
                     }
                 }
             }
 
-            if (bestMove && bestGain > 0) {
-                bestMove.box.articles.push(bestMove.article);
-                remainingArticles =
-                    remainingArticles.filter(a => a.id_article !== bestMove.article.id_article);
+            if (bestArticle && bestBox && bestGain > 0) {
 
-                this.scoreService.usedArticles.clear();
+                bestBox.articles.push(bestArticle);
+                remainingArticles.delete(bestArticle);
+
                 currentScore =
-                    this.scoreService.evaluateComposition(boxes, campaign, usersToChild).score;
+                    this.scoreService.evaluateComposition(
+                        boxes,
+                        campaign,
+                        usersToChild
+                    ).score;
 
                 improved = true;
             }
