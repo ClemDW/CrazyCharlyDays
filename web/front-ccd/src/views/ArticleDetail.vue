@@ -45,8 +45,12 @@ export default {
       <div class="header">
         <h1>{{ article.description }}</h1>
         <img
-          v-if="article.image"
-          :src="article.image"
+          v-if="article.picture"
+          :src="
+            (($root && $root.apiUrl) || 'http://localhost:3000') +
+            '/images/' +
+            article.picture
+          "
           :alt="article.description"
           class="article-image"
         />
@@ -72,10 +76,6 @@ export default {
         <div class="info-item">
           <span class="label">Poids</span>
           <span class="value">{{ article.weight }} kg</span>
-        </div>
-        <div v-if="article.code_barre" class="info-item">
-          <span class="label">Code-barre</span>
-          <span class="value code">{{ article.code_barre }}</span>
         </div>
       </div>
 

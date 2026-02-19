@@ -46,9 +46,8 @@ La communication entre Vue.js et le serveur Express s'appuie sur une **API REST*
 
 ### Notes pour les tests
 
-* **Identifiants de test :** `admin@ccd.com` / `password123`
-* **Données pré-saisies :** Un jeu de données de test peut être chargé via le module `csv_manager` (voir section Optimisation).
-* **Fonctionnalités additionnelles :** Mise en place d'un système de typage strict pour les catégories et tranches d'âge afin de garantir l'intégrité des données dès la saisie.
+* **Identifiants de test :** `alice.dupont@email.com` pour voir le profile par exemple
+* **Données pré-saisies :** Un jeu de données de test est chargé automatiquement au démarrage du serveur.
 
 ---
 
@@ -127,3 +126,5 @@ la logique de déploiement est décrite dans un unique fichier
 `deploy.yml` versionné dans le dépôt. N'importe quel membre de l'équipe
 peut comprendre, auditer ou modifier le pipeline sans documentation
 externe.
+
+Un schéma de l'infrastructure de push sur docketu sur chaque push sur main est disponible à la racine de dépôt GitHub

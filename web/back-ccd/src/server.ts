@@ -37,23 +37,6 @@ app.get("/optimize", OptimizationController.optimize);
 app.get("/articles", ArticleController.getAll);
 app.get("/articles/:id", ArticleController.getOne);
 app.post("/articles", ArticleController.create);
-app.get("/articles/scan/:code_barre", async (req: Request, res: Response) => {
-  try {
-    const repo = AppDataSource.getRepository(Article);
-    const article = await repo.findOneBy({
-      id_article: req.params.code_barre as any,
-    });
-    if (!article) {
-      return res.status(404).json({ error: "Article non trouvé" });
-    }
-    res.json(article);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Erreur lors de la recherche", details: err });
-  }
-});
-
 app.put("/articles/:id", ArticleController.update);
 
 app.post("/users", UserController.create);

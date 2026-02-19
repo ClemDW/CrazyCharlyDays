@@ -27,12 +27,7 @@ export default {
           const id = (article.id || article.id_article || "")
             .toString()
             .toLowerCase();
-          const codeBarre = (article.code_barre || "").toString().toLowerCase();
-
-          matchesSearch =
-            description.includes(query) ||
-            id.includes(query) ||
-            codeBarre.includes(query);
+          matchesSearch = description.includes(query) || id.includes(query);
         }
 
         return (
@@ -85,17 +80,6 @@ export default {
             return;
           }
         }
-      }
-
-      // 2. If it matches a barcode exactly
-      const matchedArticle = this.articles.find(
-        (a) => a.code_barre && a.code_barre === newVal.trim(),
-      );
-      if (matchedArticle) {
-        this.$router.push({
-          name: "article-detail",
-          params: { id: matchedArticle.id_article || matchedArticle.id },
-        });
       }
     },
   },
