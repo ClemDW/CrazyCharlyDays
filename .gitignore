@@ -66,3 +66,5 @@ __screenshots__/
 
 # enable checkstyle ide
 !.idea/checkstyle-idea.xml
+
+*/node_modules/*
