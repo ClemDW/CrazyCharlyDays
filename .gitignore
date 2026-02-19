@@ -14,6 +14,7 @@ dist-ssr
 coverage
 *.local
 web/front-ccd/package-lock.json
+web/front-ccd/node_modules
 
 # Editor directories and files
 web/front-ccd/.vscode/*
