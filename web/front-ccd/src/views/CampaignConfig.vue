@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
 import { getCookie, setCookie } from "@/utils/cookie";
 
+const API_URL = "http://localhost:3000";
 const router = useRouter();
 
 // --- State ---
@@ -12,8 +14,7 @@ const maxWeight = ref<number | null>(null);
 const errorMessage = ref("");
 const successMessage = ref("");
 const configSaved = ref(false);
-
-// cookie helpers removed (moved to @/utils/cookie)
+const loading = ref(false);
 
 // --- Load saved config on mount ---
 onMounted(() => {
@@ -32,7 +33,7 @@ onMounted(() => {
 });
 
 // --- Submit ---
-function handleSubmit() {
+async function handleSubmit() {
   errorMessage.value = "";
   successMessage.value = "";
 
@@ -60,17 +61,40 @@ function handleSubmit() {
     return;
   }
 
-  const payload = {
-    minPrice: minPrice.value,
-    maxPrice: maxPrice.value,
-    maxWeight: maxWeight.value,
-  };
+  loading.value = true;
+  try {
+    // Create a new campaign via API
+    const response = await axios.post(`${API_URL}/campaign`, {
+      date: new Date().toISOString(),
+      max_weight: maxWeight.value,
+      min_price: minPrice.value,
+      max_price: maxPrice.value,
+      total_weight: 0,
+      total_price: 0,
+      status: "IN_PROGRESS",
+    });
 
-  setCookie("campaign_config", JSON.stringify(payload), 90);
+    const campaignId = response.data.id_camp;
 
-  console.log("Campaign config:", payload);
-  configSaved.value = true;
-  successMessage.value = `Configuration enregistrée : prix ${minPrice.value}€ – ${maxPrice.value}€, poids max ${maxWeight.value} g.`;
+    // Save to cookie (90 days)
+    const payload = {
+      campaignId,
+      minPrice: minPrice.value,
+      maxPrice: maxPrice.value,
+      maxWeight: maxWeight.value,
+    };
+    setCookie("campaign_config", JSON.stringify(payload), 90);
+
+    configSaved.value = true;
+    successMessage.value = `Campagne créée avec succès (ID : ${campaignId}). Prix ${minPrice.value}€ – ${maxPrice.value}€, poids max ${maxWeight.value} g.`;
+  } catch (error: any) {
+    console.error("Erreur :", error);
+    errorMessage.value =
+      error.response?.data?.message ||
+      "Erreur lors de la création de la campagne.";
+  } finally {
+    loading.value = false;
+  }
 }
 
 function launchComposition() {
@@ -139,8 +163,8 @@ function launchComposition() {
       <p v-if="successMessage" class="msg success">{{ successMessage }}</p>
 
       <!-- Submit -->
-      <button type="submit" class="btn-submit">
-        Enregistrer la configuration
+      <button type="submit" class="btn-submit" :disabled="loading">
+        {{ loading ? "Création en cours..." : "Enregistrer la configuration" }}
       </button>
     </form>
 
