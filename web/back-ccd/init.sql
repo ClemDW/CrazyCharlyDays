@@ -41,6 +41,7 @@ CREATE TABLE "user" (
 
 -- Table UserToChild
 CREATE TABLE UserToChild (
+                             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                              id_user UUID REFERENCES "user"(id_user),
                              age_range age_range_enum NOT NULL,
                              preference TEXT[]
