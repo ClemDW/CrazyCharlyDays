@@ -10,7 +10,7 @@
         "test": "npm i && tsc && npx ts-node src/test.ts"
     },
     "dependencies": {
-        "dotenv": "^16.3.1",
+        "dotenv": "^16.6.1",
         "pg": "^8.11.0",
         "reflect-metadata": "^0.2.2",
         "typeorm": "^0.3.28",

@@ -11,6 +11,6 @@ export class UserToChild extends BaseEntity {
     @Column()
     age_range: AgeRange;
 
-    @Column()
-    preferences: Array<string>;
+    @Column("text", { array: true })
+     preferences: string[];
 }
