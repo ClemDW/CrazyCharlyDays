@@ -21,11 +21,28 @@ Ce dépôt contient l'application développée par l'équipe **Jus de Raison** d
 
 ---
 
-## 💻 Partie Application Web (A COMPLETER)
+## 💻 Partie Application Web
+
+L'interface utilisateur a été développée avec le framework **Vue.js** (Vue 3 + Vite), offrant une Single-Page Application (SPA) réactive.
 
 ### Fonctionnalités implantées
 
-* [Lister ici les numéros des fonctionnalités, ex: F01 - Gestion du catalogue, etc.]
+L'application couvre l'ensemble du cycle de vie des campagnes, de la gestion du catalogue à la répartition des produits :
+
+* **F01 - Authentification & Sécurité :** Espace de connexion sécurisé administrateur (`AuthView.vue`).
+* **F02 - Tableau de bord & Statistiques :** Visualisation des indicateurs de performance, de la répartition et de l'état global du système (`AdminDashboard.vue`, `AdminStats.vue`).
+* **F03 - Gestion du Catalogue (Articles) :** Liste complète, filtres, ajout, modification et suppression des articles intégrés au système (`Catalog.vue`, `CreateArticle.vue`, `ArticleEdit.vue`). 
+* **F04 - Gestion des Abonnés :** Interface de suivi des utilisateurs et de configuration des profils et préférences de leurs enfants (`AdminSubscribers.vue`).
+* **F05 - Configuration de Campagne :** Initialisation et paramétrage des événements périodiques (poids moyen, budget, dates) (`CampaignConfig.vue`).
+* **F06 - Génération & Gestion des Box :** Visualisation des box proposées, déclenchement de l'algorithme d'optimisation (répartition des articles) et validation des résultats (`AdminBoxes.vue`).
+
+### Connexion Front / Back
+
+La communication entre Vue.js et le serveur Express s'appuie sur une **API REST** :
+* Le frontend émet des requêtes HTTP asynchrones (GET, POST, PUT, DELETE) vers les routes exposées par le backend (`/articles`, `/users`, `/box`, `/campaign`, `/optimize`).
+* Un plugin dédié (`src/plugins/api.js`) centralise les appels API pour intercepter et standardiser les requêtes/réponses.
+* Les payloads respectent rigoureusement le format JSON (tranches d'âge, énumérations, états) pour correspondre au typage fort du backend en base de données.
+* Les assets volumineux (comme les images uploadées converties en Base64/Fichiers) sont gérés avec des limites configurées sur le serveur Express.
 
 ### Notes pour les tests
 
