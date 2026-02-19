@@ -63,10 +63,7 @@ async function handleSubmit() {
   loading.value = true;
   try {
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-    const response = await axios.post(
-      `${apiUrl}/articles`,
-      payload,
-    );
+    const response = await axios.post(`${apiUrl}/articles`, payload);
     console.log("Article créé :", response.data);
     successMessage.value = `Article « ${description.value.trim()} » ajouté avec succès (ID : ${response.data.id_article}).`;
 
