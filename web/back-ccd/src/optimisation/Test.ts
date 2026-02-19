@@ -2,7 +2,7 @@ import {BoxWithArticle} from "./Temp";
 import Score from "./Score";
 import {Article} from "../entities/Article";
 import {State} from "../entities/enums/State";
-import {UserToChild} from "../entities/UserToChild";
+import {Usertochild} from "../entities/UserToChild";
 import {Campaign} from "../entities/Campaign";
 import {Categories} from "../entities/enums/Categories";
 import {AgeRange} from "../entities/enums/AgeRange";
@@ -22,10 +22,10 @@ const articles: Article[] = [
 ];
 
 // Abonnés
-const users: UserToChild[] = [
-    { id_user: "Alice", age_range: AgeRange.PE, preferences: [Categories.SOC,Categories.FIG,Categories.EVL,Categories.CON,Categories.LIV,Categories.EXT] },
-    { id_user: "Bob", age_range: AgeRange.EN, preferences: [Categories.EXT,Categories.CON,Categories.SOC,Categories.EVL,Categories.FIG,Categories.LIV] },
-    { id_user: "Clara", age_range: AgeRange.PE, preferences: [Categories.EVL,Categories.LIV,Categories.FIG,Categories.SOC,Categories.CON,Categories.EXT] }
+const users: Usertochild[] = [
+    { id_user: "Alice", age_range: AgeRange.PE.code, preference: [Categories.SOC.code,Categories.FIG.code,Categories.EVL.code,Categories.CON.code,Categories.LIV.code,Categories.EXT.code] },
+    { id_user: "Bob", age_range: AgeRange.EN.code, preference: [Categories.EXT.code,Categories.CON.code,Categories.SOC.code,Categories.EVL.code,Categories.FIG.code,Categories.LIV.code] },
+    { id_user: "Clara", age_range: AgeRange.PE.code, preference: [Categories.EVL.code,Categories.LIV.code,Categories.FIG.code,Categories.SOC.code,Categories.CON.code,Categories.EXT.code] }
 ];
 
 // Campagne
@@ -33,10 +33,9 @@ const campaign: Campaign = {
     id_camp: "c1",
     max_weight: 1200,
     date: new Date(),
-    status: StateCampaign.IN_PROGRESS,
+    status: StateCampaign.IN_PROGRESS.code,
     total_price: 0,
     total_weight: 0,
-    validated: true,
     min_price: 0,
     max_price: 0
 };
