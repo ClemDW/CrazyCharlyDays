@@ -10,28 +10,36 @@ export default class Score {
     usedArticles = new Set<string>();
 
     evaluateComposition(boxes : Array<BoxWithArticle>, campaign: Campaign, usersToChild: Array<UserToChild>) : ScoreResult {
+        this.usedArticles = new Set<string>();
         let totalScore = 0;
         let perBoxScore = new Map<string, number>();
 
         for (const box of boxes) {
-            let userToChild = usersToChild.find(utc => utc.id_user === box.box.id_user);
-            if (userToChild) {
-                let score = this.evaluateBox(box, campaign, userToChild);
-                if (score === INVALID_SCORE) {
-                    return {
-                        score: 0,
-                        perBoxScore: new Map<string, number>()
+            // Règle 7 : Tout le monde est servi
+            if (box.articles.length === 0) {
+                totalScore -= 10;
+            }
+            else {
+                let userToChild = usersToChild.find(utc => utc.id_user === box.box.id_user);
+                if (userToChild) {
+                    let score = this.evaluateBox(box, campaign, userToChild);
+                    if (score === INVALID_SCORE) {
+                        return {
+                            score: 0,
+                            perBoxScore: new Map<string, number>()
+                        }
                     }
+                    perBoxScore.set(box.box.id_box, score);
+                    totalScore += score;
                 }
-                perBoxScore.set(box.box.id_box, score);
-                totalScore += score;
             }
 
             // Règle 8 : Equité
-            for (const box2 of boxes) {
-                if (box.box.id_box !== box2.box.id_box) {
-                    if (box2.articles.length - box.articles.length > 2) {
+            for (const otherBox of boxes) {
+                if (box.box.id_box !== otherBox.box.id_box) {
+                    if (otherBox.articles.length - box.articles.length >= 2) {
                         totalScore -= 10;
+                        break;
                     }
                 }
             }
@@ -47,11 +55,6 @@ export default class Score {
         let totalWeight = 0;
         let score = 0;
         let categoriesCount = new Map<string, number>();
-
-        // Règle 7 : Tout le monde est servi
-        if (box.articles.length === 0) {
-            return -10;
-        }
 
         for (const article of box.articles) {
             // Règle 1 : Unicité des articles
