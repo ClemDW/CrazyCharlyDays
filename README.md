@@ -54,6 +54,26 @@ Nous avons adopté une structure modulaire pour faciliter la maintenance et l'é
 * **TypeORM (Active Record)** : L'utilisation de cet ORM permet une manipulation fluide des données sous forme d'objets, simplifiant les opérations de création et de récupération tout en protégeant l'application contre les injections SQL.
 * **REST API** : La communication est centralisée dans un serveur Express (`server.ts`), offrant une interface claire et documentée pour le frontend.
 
+### Exemple d'utilisation pour tester la méthode d'optimisation sur un jeu de données
+
+```js
+import { loadCSV } from "./csv_manager/csv_loader";
+import { saveCSV } from "./csv_manager/csv_saver";
+import { Solver } from "./optimisation/Solver";
+
+// Chargement du CSV contenant les données dans la BDD
+loadCSV("/chemin/vers/fichier.csv");
+
+// Résolution du problème d'optimisation à partir des données chargées
+let res = Solver.solve();
+
+// Génération du CSV à partir du résultat de l'optimisation
+let csvString = Solver.generateCSVString(res);
+
+// Sauvegarde du CSV généré dans un fichier dédié
+saveCSV(csvString, "/chemin/vers/resultat.csv");
+```
+
 ---
 
 ## 🚀 Déploiement (A COMPLETER)
@@ -65,22 +85,3 @@ Le déploiement de l'application suit une méthodologie d'intégration continue 
 3. **Hébergement** : [Détaillez ici si vous utilisez Heroku, Vercel, un VPS, etc.]
 
 ---
-
-### Installation rapide (A COMPLETER)
-
-```bash
-# Installation des dépendances
-npm install
-
-# Configuration de l'environnement (créer un fichier .env à la racine)
-# DB_HOST=...
-# DB_PORT=...
-
-# Lancement du serveur
-npm run dev
-
-```
-
----
-
-Que souhaiteriez-vous que je précise davantage dans la section **Optimisation** ou sur les **arguments techniques** de PostgreSQL ?
