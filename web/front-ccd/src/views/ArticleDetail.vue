@@ -45,8 +45,8 @@ export default {
       <div class="header">
         <h1>{{ article.description }}</h1>
         <img
-          v-if="article.image"
-          :src="article.image"
+          v-if="article.picture"
+          :src="(($root && $root.apiUrl) || 'http://localhost:3000') + '/images/' + article.picture"
           :alt="article.description"
           class="article-image"
         />
