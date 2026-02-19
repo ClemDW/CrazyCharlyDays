@@ -1,33 +1,28 @@
-import { UUID } from "node:crypto";
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Double } from "typeorm";
-import { Categories } from "./enums/Categories";
-import { AgeRange } from "./enums/AgeRange";
-import { State } from "./enums/State";
-
+// entities/Article.ts
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { CategoryKey } from "./enums/Categories";
+import { AgeRangeKey } from "./enums/AgeRange";
+import { StateKey } from "./enums/State";
 
 @Entity()
 export class Article extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
-    id_article: UUID;
+    id_article: string;
 
     @Column()
     description: string;
 
-    @Column()
-    category: Categories;
+    @Column({ type: "varchar" })
+    category: CategoryKey;
 
-    @Column()
-    age_range: AgeRange;
+    @Column({ type: "varchar" })
+    age_range: AgeRangeKey;
+    @Column({ type: "varchar" })
+    state: StateKey;
 
-    @Column()
-    state: State;
-
-    @Column()
+    @Column("float")
     price: number;
 
-    @Column()
+    @Column("float")
     weight: number;
-
-    @Column()
-    id_box: UUID;
 }

@@ -1,12 +1,10 @@
-import { UUID } from "node:crypto";
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, Double } from "typeorm";
-import { Role } from "./enums/Role";
-
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { RoleKey } from "./enums/Role";
 
 @Entity()
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
-    id_user: UUID;
+    id_user: string;
 
     @Column()
     name: string;
@@ -14,9 +12,13 @@ export class User extends BaseEntity {
     @Column()
     family_name: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
-    @Column()
-    role: Role;
+    @Column({
+        type: "varchar",
+        length: 20,
+        default: "USER"
+    })
+    role: RoleKey;
 }
