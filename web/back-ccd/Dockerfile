@@ -11,8 +11,5 @@ RUN npm install
 # Copier le reste du code source
 COPY . .
 
-# Exposer le port du backend
-EXPOSE 3000
-
 # Lancer le serveur en mode dev (avec watch pour hot-reload)
 CMD ["npm", "run", "dev"]

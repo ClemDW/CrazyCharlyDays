@@ -1,7 +1,7 @@
 {
-    "name": "back-ccd",
+    "name": "bdd-ccd",
     "version": "1.0.0",
-    "description": "Backend API pour CrazyCharlyDays",
+    "description": "BDD pour CrazyCharlyDays",
     "main": "src/index.js",
     "scripts": {
         "dev": "node --watch src/index.js",
